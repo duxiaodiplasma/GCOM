@@ -18,7 +18,7 @@ from progressbar import ProgressBar
 R0 = np.arange(1.0,2.3,0.05)
 Z0 = np.arange(-0.8,0.8,0.1)
 pitch0 = np.arange(-1,1,0.05)
-E0 = 30
+E0 = 80
 
 nseg   = 1000
 nstep  = 200000
@@ -72,7 +72,7 @@ if __name__ == '__main__':
              for i in range(0,len(R0)) \
              )
 
-np.savez('/home/duxiaodi/GCOM/GCOM_v2/RESONANCE/OUT/PARA_RESONANCE_30_152932.npz',
+np.savez('/home/duxiaodi/GCOM/GCOM_v2/RESONANCE/OUT/Kathreen_'+np.str(E0)+'_165037.npz',
       output = output)
 
 

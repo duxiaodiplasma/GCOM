@@ -14,7 +14,6 @@ from include import *
 from joblib import Parallel, delayed
 from progressbar import ProgressBar
 
-
 R0 = np.arange(1.0,2.3,0.05)
 Z0 = np.arange(-0.8,0.8,0.1)
 E0 = np.arange(30,90,1)

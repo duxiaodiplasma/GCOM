@@ -9,8 +9,12 @@ import matplotlib.mlab as mlab
 #import bindata
 
 
-fn = np.load('/home/duxiaodi/GCOM/GCOM_v2/RESONANCE/OUT/PARA_RESONANCE_30_152932.npz')
+#fn = np.load('/home/duxiaodi/GCOM/GCOM_v2/RESONANCE/OUT/PARA_RESONANCE_60_152932.npz')
+Eini = 80
+fn = np.load('/home/duxiaodi/GCOM/GCOM_v2/RESONANCE/OUT/Kathreen_'+np.str(Eini)+'_165037.npz')
+fn2 = np.load('/home/duxiaodi/GCOM/GCOM_v2/RESONANCE/OUT/FI_'+np.str(Eini)+'_165037a.npz')
 output = fn['output']
+output2 = fn2['output']
 
 R0 = np.reshape(output[:,:,:,0],np.size(output)/len(output[0,0,0,:]))
 Z0 = np.reshape(output[:,:,:,1],np.size(output)/len(output[0,0,0,:]))
@@ -22,6 +26,8 @@ ftheta = np.reshape(output[:,:,:,8],np.size(output)/len(output[0,0,0,:]))
 rhomin = np.reshape(output[:,:,:,9],np.size(output)/len(output[0,0,0,:]))
 rhomax = np.reshape(output[:,:,:,10],np.size(output)/len(output[0,0,0,:]))
 
+pphi_f = output2[:,5]
+mu_E_f = output2[:,6]
 
 def bin(x,y,z,nx,ny):
     xmin = np.min(x)
@@ -52,33 +58,45 @@ def normalize(data):
 
 def int_p(p,intp,msrho):
     mask = np.where(((ob > 3) & (mu_E>0))
-                  & ((p>intp*0.99) & (p<1.01*intp))
+                  & ((p>(intp-0.2)) & (p<(intp+0.2)))
                   & (((rhomin<msrho[1]) & (rhomin>msrho[0]))
                   | ((rhomax<msrho[1]) & (rhomax>msrho[0])))
                     )
-    return mask
+    print(intp)
+    return mask[0]
 
 
 
-msmin,msmax = 0.3,0.8
-fmode = 100
-nmode = -4
-p = (fmode - nmode*fphi )/ftheta
+msmin,msmax = 0.0,1.0
+fmode = 6
+nmode = 1
+mmode=1
+p = (fmode - nmode*fphi )#/ftheta
+#p = p - mmode
 
 width = np.concatenate(([rhomax-msmin],[rhomax-rhomin],[np.repeat(msmax-msmin,len(rhomin))],[msmax-rhomin]),axis=0)
 growth = (msmax-msmin)/np.max(width,axis=0)
 
 plt.clf()
 plt.title('$f_{mode}=$'+np.str(fmode)+'$kHz$'+'   $n=$'+np.str(nmode)+
-          '  E=30keV')
+          '  E='+np.str(Eini)+'keV')
 
-for i in range(-20,20):
+a = np.array([],dtype='int')
+#intp = [-5,-4,-3,-2,-1,0,1,2,3,4,5]
+intp = [0]
+for i in intp:
     mask = int_p(p,i,[msmin,msmax])
-    #sc = plt.scatter(pphi[mask],mu_E[mask],c=growth[mask],vmin=0.4,vmax=1.0,cmap=plt.cm.rainbow)
-    #print(p[mask])
-    sc = plt.scatter(pphi[mask],mu_E[mask],c=p[mask]-15,vmin=-5,vmax=5,cmap=plt.cm.rainbow)
-cb = plt.colorbar(sc,orientation='horizontal')
+    a = np.concatenate((a,mask))
 
+
+mask = np.copy(a)
+sc2 = plt.scatter(pphi_f,mu_E_f,marker='+',alpha=0.5,color='black')
+#sc=plt.scatter(pphi[mask],mu_E[mask],c=p[mask],vmin=0,vmax=5,cmap=plt.cm.rainbow,marker='o')
+sc=plt.scatter(pphi[mask],mu_E[mask],color='red')
+#cb = plt.colorbar(sc,orientation='horizontal')
+
+plt.xlim(-4,8)
+plt.ylim(-0.2,1.4)
 #nu = np.load('RESONANCE/OUT/FI_NUBEAM.npz')
 #nubeam = nu['output']
 #fi_pphi = -1.0*np.reshape(nubeam[:,:,:,5],220*50*75)
@@ -118,9 +136,9 @@ f5 = ax.scatter(pphi[m5],mu_E[m5],
 m6 = np.where(ob==6)
 f6 = ax.scatter(pphi[m6],mu_E[m6],alpha=0.1,marker='s',facecolors='none',edgecolors='g')
 
-plt.legend((f1,f2,f3,f4,f5,f6),
-            ('L,T','L,CP','L,CTP','C,T','C,CP','C,CTP'),
-            scatterpoints=1,ncol=3,fontsize=12,loc=4)
+#plt.legend((f1,f2,f3,f4,f5,f6),
+#            ('L,T','L,CP','L,CTP','C,T','C,CP','C,CTP'),
+#            scatterpoints=1,ncol=3,fontsize=12,loc=4)
 
 plt.ylabel('$\mu B/E$')
 plt.xlabel('$P_{\phi}/\Psi_{wall}$')
