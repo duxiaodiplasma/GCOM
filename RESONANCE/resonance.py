@@ -15,10 +15,18 @@ from joblib import Parallel, delayed
 from progressbar import ProgressBar
 
 
-R0 = np.arange(1.0,2.3,0.05)
+#R0 = np.arange(1.0,2.35,0.05)
+#Z0 = np.arange(-0.8,0.81,0.1)
+#pitch0 = np.arange(-1,1.05,0.05)
+R0 = np.arange(1.0,2.3,0.1)
 Z0 = np.arange(-0.8,0.8,0.1)
-pitch0 = np.arange(-1,1,0.05)
-E0 = 80
+pitch0 = np.arange(-1,1,0.1)
+
+E0 = 60
+#comment = '165042'
+#comment = '165037'
+comment = '165037_won'
+#comment = '159243_p'
 
 nseg   = 1000
 nstep  = 200000
@@ -43,15 +51,15 @@ def PARA_RESONANCE(i):
                     cal_prob,
                     R,Z,RR,ZZ,
                     br,bz,bt,b,
-                    bc,rmaxis,sibry,rbbbs,zbbbs,
+                    bc,rmaxis,sibry,simag,rbbbs,zbbbs,
                     nr,nz,psi,
-                    f_br,f_bz,f_bt,f_b,
+                    f_br,f_bz,f_bt,f_b,f_psi,
                     equ_curve,equ_grad
                     )
 
             obr = out['obr']
             obz = out['obz']
-            rho = trace.RZ_to_RHO(obr,obz,f_psi,simag,sibry)
+            rho = out['rho']
 
             output[j,k,0]  = R0[i]
             output[j,k,1]  = Z0[j]
@@ -68,11 +76,11 @@ def PARA_RESONANCE(i):
     return output
 
 if __name__ == '__main__':
-    output = Parallel(n_jobs=16)(delayed(PARA_RESONANCE)(i) \
+    output = Parallel(n_jobs=12)(delayed(PARA_RESONANCE)(i) \
              for i in range(0,len(R0)) \
              )
 
-np.savez('/home/duxiaodi/GCOM/GCOM_v2/RESONANCE/OUT/Kathreen_'+np.str(E0)+'_165037.npz',
+np.savez('/home/duxiaodi/GCOM/GCOM_v2/RESONANCE/OUT/Kathreen_'+np.str(E0)+'_'+np.str(comment)+'.npz',
       output = output)
 
 

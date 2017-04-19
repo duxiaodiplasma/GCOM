@@ -25,8 +25,10 @@ from joblib import Parallel, delayed
 #mcparticles_from_df.main(fn_nubeam,mcnum,Eini)
 
 Eini = 80
-mcnum=20000
-fn_nubeam = '/home/duxiaodi/thomek/165037/dist_80kev_1M_165037.dat'
+shot = 165037
+mcnum= 500000
+#fn_nubeam = '/home/duxiaodi/thomek/165037/dist_80kev_1M_165037.dat'
+fn_nubeam = '/home/duxiaodi/thomek/dist_'+np.str(Eini)+'keV_1M_'+np.str(shot)+'.dat'
 tmp = np.loadtxt(fn_nubeam)
 R_array = tmp[0:mcnum,0]/1e2
 Z_array = tmp[0:mcnum,1]/1e2
@@ -79,7 +81,7 @@ if __name__ == '__main__':
         for i in range(0,mcnum) \
         )
 
-   np.savez('/home/duxiaodi/GCOM/GCOM_v2/RESONANCE/OUT/FI_'+np.str(Eini)+'_165037a.npz',
+   np.savez('/home/duxiaodi/GCOM/GCOM_v2/RESONANCE/OUT/FI_'+np.str(Eini)+'_'+np.str(shot)+'.npz',
            output = np.asarray(output))
 
 
