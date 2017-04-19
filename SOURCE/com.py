@@ -6,6 +6,7 @@ import matplotlib.pylab as plt
 import numpy as np
 import geqdsk
 import ugrid
+import trace
 from progressbar import ProgressBar
 from scipy import interpolate
 from scipy.signal import savgol_filter
@@ -14,6 +15,8 @@ def f_pphi(R,bphi,b,v_para,psi):
     """ calculate canonical toroial momentum """
     pphi \
     = gl.m*R*(bphi/b)*v_para+gl.q*psi
+    # not sure plus or minus
+    #= gl.m*R*(bphi/b)*v_para+gl.q*psi
     return pphi
 
 
@@ -47,6 +50,8 @@ def f_ini(R0,Z0,E0,pitch0):
     rcbc  = b['rcbc']
     rbbbs = b['rbbbs']
     zbbbs = b['zbbbs']
+    simag = b['simag']
+    sibry = b['sibry']
 
     # initial toroidal canonical momentum
     pphi0 = f_pphi(R0,bphi,btotal,v_para,psi)
@@ -74,7 +79,7 @@ def f_vpara(R,btotal,bphi,pphi,psi):
     vpara = btotal/(gl.m*R*bphi)*(pphi-gl.q*psi)
     return vpara
 
-def f_mucontour(r,z,murz,vpararz,rbbbs,zbbbs,mu0,rmaxis,R0,Z0,nseg):
+def f_mucontour(r,z,murz,vpararz,rbbbs,zbbbs,mu0,rmaxis,R0,Z0,nseg,f_psi,sibry,simag):
     """  get the specific mu contour """
 
     # Do not plot the contour in X window
@@ -128,8 +133,8 @@ def f_mucontour(r,z,murz,vpararz,rbbbs,zbbbs,mu0,rmaxis,R0,Z0,nseg):
            ob_vpara_tmp[i] = fvpara(obz[i],obr[i])
 
        # give the orbit class
-       orbit_class \
-       = orbit_check(ob_vpara_tmp,obr,obz,rbbbs,zbbbs,rmaxis)
+       orbit_class,rho \
+       = orbit_check(ob_vpara_tmp,obr,obz,rbbbs,zbbbs,rmaxis,f_psi,sibry,simag)
 
        # interpolatation for fine resolution
        tck, u = interpolate.splprep([obr,obz],s=0)
@@ -147,11 +152,12 @@ def f_mucontour(r,z,murz,vpararz,rbbbs,zbbbs,mu0,rmaxis,R0,Z0,nseg):
             'orbit_class' : orbit_class,
             'ob_vpara'    : ob_vpara,
             'fvpara'      : fvpara,
-            'levels'      : levels
+            'levels'      : levels,
+            'rho'         : rho
            }
 
 
-def orbit_check(ob_vpara,obr,obz,rbbbs,zbbbs,rmaxis):
+def orbit_check(ob_vpara,obr,obz,rbbbs,zbbbs,rmaxis,f_psi,sibry,simag):
     """ identify the orbit type from vpara """
     # Lost  -  Trapped             1
     # Lost  -  counter-Ip Passing  2
@@ -160,11 +166,16 @@ def orbit_check(ob_vpara,obr,obz,rbbbs,zbbbs,rmaxis):
     # Conf. -  counter-Ip Passing  5
     # Conf. -  co-Ip Passing       6
 
-    outboundary =  \
-    [obr>np.max(rbbbs), obr<np.min(rbbbs), \
-     obz>np.max(zbbbs), obz<np.min(zbbbs)]
+#    outboundary =  \
+#    [obr>np.max(rbbbs), obr<np.min(rbbbs), \
+#     obz>np.max(zbbbs), obz<np.min(zbbbs)]
+    rho = trace.RZ_to_RHO(obr,obz,f_psi,simag,sibry)
+    if np.max(np.abs(rho)) > 1:
+       outboundary = True
+    else:
+       outboundary = False
 
-    if np.any(outboundary): \
+    if outboundary: \
        # hit the wall, lost particles
        if np.any(np.sign(ob_vpara) ==1) and np.any(np.sign(ob_vpara) ==-1):
           # lost, trapped particles
@@ -186,7 +197,7 @@ def orbit_check(ob_vpara,obr,obz,rbbbs,zbbbs,rmaxis):
           # Confined co-Ip passing particle, always one direction in v_para
           orb = 6
 
-    return orb
+    return orb,rho
 
 def ob_stream(obr,obz):
 

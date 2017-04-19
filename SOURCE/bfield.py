@@ -49,6 +49,8 @@ def main(lr,lz,phi,fn):
    bc = res['bcentr']
    rbbbs = res['rbbbs']
    zbbbs = res['zbbbs']
+   sibry = res['sibry']
+   simag = res['simag']
 
    # first deravitive of the psi in RZ direction
    dpsi_dr = np.zeros([nr,nz])
@@ -75,6 +77,7 @@ def main(lr,lz,phi,fn):
    l_dpsiz = fz(lz,lr)
 
    # local psi
+   #fpsi = interpolate.interp2d(zz, rr, (psirz-simag)/(sibry-simag), kind='cubic')
    fpsi = interpolate.interp2d(zz, rr, psirz, kind='cubic')
    psi = fpsi(lz,lr)
 
@@ -112,6 +115,8 @@ def main(lr,lz,phi,fn):
            'fpsi':fpsi,
            'rcbc':rc*bc,
            'rbbbs':rbbbs,
-           'zbbbs':zbbbs
+           'zbbbs':zbbbs,
+           'simag':simag,
+           'sibry':sibry
            }
 

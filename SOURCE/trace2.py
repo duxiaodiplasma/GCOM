@@ -15,9 +15,9 @@ def main(
         calc_prob,
         R,Z,RR,ZZ,
         br,bz,bt,b,
-        bc,rmaxis,sibry,simag,rbbbs,zbbbs,
+        bc,rmaxis,sibry,rbbbs,zbbbs,
         nr,nz,psi,
-        f_br,f_bz,f_bt,f_b,f_psi,
+        f_br,f_bz,f_bt,f_b,
         equ_curve,equ_grad
         ):
     """  trace the orbit  """
@@ -34,18 +34,15 @@ def main(
     Epara = 1/2.*gl.m*vpararz**2
     Eperp = E0 - Epara
     ob_contour \
-    = com.f_mucontour(RR,ZZ,murz,vpararz,rbbbs,zbbbs,mu0,rmaxis,R0,Z0,nseg,f_psi,sibry,simag)
+    = com.f_mucontour(RR,ZZ,murz,vpararz,rbbbs,zbbbs,mu0,rmaxis,R0,Z0,nseg)
 
-    #pphi = pphi0/(simag-sibry)/gl.q
     pphi = pphi0/sibry/gl.q
-    #pphi = pphi0/gl.q
     mu_E = mu0*np.abs(bc)/(E0/1e3/gl.q)
     ob   = ob_contour['orbit_class']
     fvpara = ob_contour['fvpara']
 
     obr = ob_contour['obr']
     obz = ob_contour['obz']
-    rho = ob_contour['rho']
 
     ob_vpara = ob_contour['ob_vpara']
     pitch = ob_vpara/(np.sqrt(2*E0/gl.m))
@@ -90,6 +87,13 @@ def main(
        obxyz[:,0] = sol[:,0]*np.cos(sol[:,1])
        obxyz[:,1] = sol[:,0]*np.sin(sol[:,1])
        obxyz[:,2] = sol[:,2]
+
+       obr = sol[:,0]
+       obz = sol[:,2]
+       ob_vpara_tmp = np.zeros(len(obr))
+       for i in np.arange(len(obr)):
+           ob_vpara_tmp[i] = fvpara(obz[i],obr[i])
+       ob = com.orbit_check(ob_vpara_tmp,obr,obz,rbbbs,zbbbs,rmaxis)
 
 
        # USED IN WEIGHT FUNCTION CALCULATION
@@ -139,7 +143,6 @@ def main(
            'Rmax' : np.max(obr),
            'Pmax' : pitch[np.argmax(obr)],
            'Zmax' : obz[np.argmax(obr)],
-           'rho'  : rho
            }
 
     elif switch_full_orbit ==1:
@@ -149,10 +152,9 @@ def main(
            'obr'  : obr,
            'obz'  : obz,
            'pitch': pitch,
-           'Rmax' : np.max(obr),
-           'Pmax' : pitch[np.argmax(obr)],
-           'Zmax' : obz[np.argmax(obr)],
-           'rho'  : rho,
+           #'Rmax' : np.max(obr),
+           #'Pmax' : pitch[np.argmax(obr)],
+           #'Zmax' : obz[np.argmax(obr)],
 
            'pphi' :  pphi,
            'mu_E' :  mu_E,
