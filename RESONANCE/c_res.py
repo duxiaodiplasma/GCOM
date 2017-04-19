@@ -14,7 +14,7 @@ Eini =60
 #comment = '159243_p'
 #comment = '165042'
 comment = '165037'
-comment = '165037_won'
+#comment = '165037_won'
 fn = np.load('/home/duxiaodi/GCOM/GCOM_v2/RESONANCE/OUT/Kathreen_'
               +np.str(Eini)+'_'+np.str(comment)+'.npz')
 output = fn['output']
@@ -66,19 +66,7 @@ plt.clf()
 plt.title('$f_{mode}=$'+np.str(fmode)+'$kHz$'+'   $n=$'+np.str(nmode)+
           '  E='+np.str(Eini)+'keV'+'   '+comment)
 
-a = np.array([],dtype='int')
-#intp = [-5,-4,-3,-2,-1,0,1,2,3,4,5]
-intp = [0]
-for i in intp:
-    mask = int_p(p,i,[msmin,msmax])
-    a = np.concatenate((a,mask))
 
-
-mask = np.copy(a)
-#sc2 = plt.scatter(pphi_f[0:100000],mu_E_f[0:100000],marker='+',alpha=1,color='black')
-sc=plt.scatter(pphi[mask],mu_E[mask],c=p[mask],vmin=0,vmax=5,cmap=plt.cm.rainbow,marker='o')
-#sc=plt.scatter(pphi[mask],mu_E[mask],color='red')
-#cb = plt.colorbar(sc,orientation='horizontal')
 
 plt.xlim(-2,9)
 plt.ylim(-0.2,1.4)
@@ -87,28 +75,42 @@ matplotlib.interactive('t')
 ax = plt.subplot(111)
 
 color = [str(item/255.) for item in ob]
-m1 = np.where(ob==1)
-f1 = ax.scatter(pphi[m1],mu_E[m1],c='purple',alpha=0.1,marker='x')
+#m1 = np.where(ob==1)
+#f1 = ax.scatter(pphi[m1],mu_E[m1],c='purple',alpha=0.1,marker='x')
+#
+## L,co passing
+#m2 = np.where(ob==2)
+#f2 = ax.scatter(pphi[m2],mu_E[m2],c='black',alpha=0.1,marker='x')
+#
+#m3 = np.where(ob==3)
+#f3 = ax.scatter(pphi[m3],mu_E[m3],c ='orange',alpha=0.1,marker='x')
 
-# L,co passing
-m2 = np.where(ob==2)
-f2 = ax.scatter(pphi[m2],mu_E[m2],c='black',alpha=0.1,marker='x')
-
-m3 = np.where(ob==3)
-f3 = ax.scatter(pphi[m3],mu_E[m3],c ='orange',alpha=0.1,marker='x')
-
-m4 = np.where(ob==4)
-f4 = ax.scatter(pphi[m4],mu_E[m4],
-    marker='s',alpha=0.1,s=20,facecolors='none',edgecolors='r')
 
 # C,co passing
 m5 = np.where(ob==5)
-f5 = ax.scatter(pphi[m5],mu_E[m5],
-    alpha=0.1,marker='s',s=20,facecolors='none',edgecolors='b')
+f5 = ax.plot(pphi[m5],mu_E[m5],
+    alpha=0.2)
+
+m4 = np.where(ob==4)
+f4 = ax.plot(pphi[m4],mu_E[m4],
+   alpha=0.2)
 
 m6 = np.where(ob==6)
-f6 = ax.scatter(pphi[m6],mu_E[m6],alpha=0.1,marker='s',facecolors='none',edgecolors='g')
+f6 = ax.plot(pphi[m6],mu_E[m6],alpha=0.5)
 
+a = np.array([],dtype='int')
+#intp = [-5,-4,-3,-2,-1,0,1,2,3,4,5]
+intp = [0]
+for i in intp:
+    mask = int_p(p,i,[msmin,msmax])
+    a = np.concatenate((a,mask))
+
+mask = np.copy(a)
+#sc2 = plt.scatter(pphi_f[0:100000],mu_E_f[0:100000],marker='+',alpha=1,color='black')
+sc=plt.scatter(pphi[mask],mu_E[mask],color='black',marker='o',s=20)
+#sc=plt.scatter(pphi[mask],mu_E[mask],color='red')
+
+#cb = plt.colorbar(sc,orientation='horizontal')
 #plt.legend((f1,f2,f3,f4,f5,f6),
 #            ('L,T','L,CP','L,CTP','C,T','C,CP','C,CTP'),
 #            scatterpoints=1,ncol=3,fontsize=12,loc=4)

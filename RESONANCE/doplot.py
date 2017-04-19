@@ -112,16 +112,8 @@ for i in intp:
     a = np.concatenate((a,mask))
 
 xx,yy,zz = fi(Eini,comment)
-#sc = plt.contour(xx,yy,zz,levels=np.linspace(600,2500,10),alpha=0.7,linewidths=2.0)
 
-mask = np.copy(a)
-#sc2 = plt.scatter(pphi_f[0:100000],mu_E_f[0:100000],marker='+',alpha=1,color='black')
-sc=plt.scatter(pphi[mask],mu_E[mask],color='black',marker='o',s=35)
-#sc=plt.scatter(pphi[mask],mu_E[mask],color='red')
-#cb = plt.colorbar(sc,orientation='horizontal')
-
-plt.xlim(-4,8)
-plt.ylim(-0.2,1.4)
+plt.ylim(-0.,1.4)
 
 matplotlib.interactive('t')
 ax = plt.subplot(111)
@@ -136,23 +128,36 @@ color = [str(item/255.) for item in ob]
 #
 #m3 = np.where(ob==3)
 #f3 = ax.scatter(pphi[m3],mu_E[m3],c ='orange',alpha=0.1,marker='x')
-
-m4 = np.where(ob==4)
-f4 = ax.scatter(pphi[m4],mu_E[m4],
-    marker='s',alpha=0.1,s=5,edgecolors='r',color='green')
-
 # C,co passing
 m5 = np.where(ob==5)
-f5 = ax.scatter(pphi[m5],mu_E[m5],
-    alpha=0.1,marker='s',s=5,edgecolors='b')
+f5 = ax.plot(pphi[m5],mu_E[m5],
+    alpha=0.05,color='red')
+
+m4 = np.where(ob==4)
+f4 = ax.plot(pphi[m4],mu_E[m4],
+       alpha=0.4,color='green')
 
 m6 = np.where(ob==6)
-f6 = ax.scatter(pphi[m6],mu_E[m6],alpha=0.1,marker='o',edgecolors='g',s=5)
-
+f6 = ax.plot(pphi[m6],mu_E[m6],alpha=0.2,color='blue')
+#m4 = np.where(ob==4)
+#f4 = ax.scatter(pphi[m4],mu_E[m4],
+#    marker='s',alpha=0.1,s=5,edgecolors='r',color='green')
+#
+## C,co passing
+#m5 = np.where(ob==5)
+#f5 = ax.scatter(pphi[m5],mu_E[m5],
+#    alpha=0.1,marker='s',s=5,edgecolors='b')
+#
+#m6 = np.where(ob==6)
+#f6 = ax.scatter(pphi[m6],mu_E[m6],alpha=0.1,marker='o',edgecolors='g',s=5)
+#
 #plt.legend((f1,f2,f3,f4,f5,f6),
 #            ('L,T','L,CP','L,CTP','C,T','C,CP','C,CTP'),
 #            scatterpoints=1,ncol=3,fontsize=12,loc=4)
 
+mask = np.copy(a)
+sc=ax.scatter(pphi[mask],mu_E[mask],color='black',marker='o',s=40)
+ax.set_xlim([0,6])
 plt.ylabel('$\mu B/E$')
 plt.xlabel('$P_{\phi}/\Psi_{wall}$')
 
