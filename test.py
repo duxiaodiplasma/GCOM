@@ -5,10 +5,13 @@ sys.path.insert(0, '/home/duxiaodi/GCOM_v3/GCOM/RESONANCE')
 
 import numpy as np
 import creatobj
+import trace
+import gl
+import matplotlib.pylab as plt
+#from include import *
 import geqdsk
 import bgrid
 import ugrid
-import trace
 
 #                   (R,    Z,   phi, pitch, E)
 inpu = creatobj.inpu(2.1, 0.0, 0.0,  -0.2, 75)
@@ -30,7 +33,7 @@ g = geqdsk.read(inpu.fn)
 g = bgrid.main(g)
 g = ugrid.equ(g)
 
-outpu = creatobj.outpu('NEED MORE BENCHMARK')
+outpu = creatobj.outpu('TEST STAGE')
 outpu = trace.main(g,inpu,outpu)
 
 #obr = out['obr']

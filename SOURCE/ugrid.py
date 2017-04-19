@@ -1,36 +1,33 @@
 import bgrid
 import numpy as np
-import gl
 from scipy import interpolate
 
-def equ(fn):
+def equ(g):
 
-    out = bgrid.main(fn)
+    nr = g.nr
+    nz = g.nz
 
-    nr = out['nr']
-    nz = out['nz']
+    br = g.br
+    bz = g.bz
+    bt = g.bt
+    b  = g.b
 
-    br = out['br']
-    bz = out['bz']
-    bt = out['bt']
-    b  = out['b']
+    r  = g.r
+    z  = g.z
+    rr = g.rr
+    zz = g.zz
 
-    r  = out['r']
-    z  = out['z']
-    rr = out['rr']
-    zz = out['zz']
+    dbz_dr = g.dbz_dr
+    dbz_dz = g.dbz_dz
 
-    dbz_dr = out['dbz_dr']
-    dbz_dz = out['dbz_dz']
+    dbr_dr = g.dbr_dr
+    dbr_dz = g.dbr_dz
 
-    dbr_dr = out['dbr_dr']
-    dbr_dz = out['dbr_dz']
+    dbt_dr = g.dbt_dr
+    dbt_dz = g.dbt_dz
 
-    dbt_dr = out['dbt_dr']
-    dbt_dz = out['dbt_dz']
-
-    db_dr = out['db_dr']
-    db_dz = out['db_dz']
+    db_dr = g.db_dr
+    db_dz = g.db_dz
 
     equ_curve = np.zeros((nr,nz,3))
     equ_grad  = np.zeros((nr,nz,3))
@@ -54,30 +51,26 @@ def equ(fn):
     equ_grad[:,:,2] = 1/(b**3)*(-1.0*bt*db_dr)
 
 
-    return{
-          'equ_curve' : equ_curve,
-          'equ_grad'  : equ_grad,
+    g.equ_curve = equ_curve,
+    g.equ_grad  = equ_grad,
 
-          'rr':rr,
-          'zz':zz,
-          'r' : r,
-          'z' : z
-          }
+    return g
 
-def main(nr,nz,rr,zz,Epara,Eperp,equ_curve,equ_grad):
+
+def main(nr,nz,rr,zz,Epara,Eperp,equ_curve,equ_grad,charge):
         #nr,nz,RR,ZZ,Epara,Eperp,equ_curve,equ_grad
 
     u       = np.zeros((nr,nz,3))
     u_curve = np.zeros((nr,nz,3))
     u_grad  = np.zeros((nr,nz,3))
 
-    u_curve[:,:,0] = 2*Epara*equ_curve[:,:,0]/gl.q  # R
-    u_curve[:,:,1] = 2*Epara*equ_curve[:,:,1]/gl.q  # phi
-    u_curve[:,:,2] = 2*Epara*equ_curve[:,:,2]/gl.q  # Z
+    u_curve[:,:,0] = 2*Epara*equ_curve[:,:,0]/charge  # R
+    u_curve[:,:,1] = 2*Epara*equ_curve[:,:,1]/charge  # phi
+    u_curve[:,:,2] = 2*Epara*equ_curve[:,:,2]/charge  # Z
 
-    u_grad[:,:,0]  = Eperp*equ_grad[:,:,0]/gl.q # R
-    u_grad[:,:,1]  = Eperp*equ_grad[:,:,1]/gl.q # phi
-    u_grad[:,:,2]  = Eperp*equ_grad[:,:,2]/gl.q # Z
+    u_grad[:,:,0]  = Eperp*equ_grad[:,:,0]/charge # R
+    u_grad[:,:,1]  = Eperp*equ_grad[:,:,1]/charge # phi
+    u_grad[:,:,2]  = Eperp*equ_grad[:,:,2]/charge # Z
 
     u[:,:,0] = u_curve[:,:,0] + u_grad[:,:,0] # uR
     u[:,:,1] = u_curve[:,:,1] + u_grad[:,:,1] # uphi

@@ -1,6 +1,3 @@
-
-import gl
-import bfield
 import numpy as np
 import geqdsk
 import ugrid
@@ -8,38 +5,67 @@ import com
 from scipy.integrate import odeint
 
 
-def main(
-        R0,Z0,E0,pitch0,
-        nseg,nstep,tstep,
-        switch_full_orbit,
-        calc_prob,
-        R,Z,RR,ZZ,
-        br,bz,bt,b,
-        bc,rmaxis,sibry,simag,rbbbs,zbbbs,
-        nr,nz,psi,
-        f_br,f_bz,f_bt,f_b,f_psi,
-        equ_curve,equ_grad
-        ):
-    """  trace the orbit  """
-    # ---- calculation ----
-    ini = com.f_ini(R0,Z0,E0,pitch0)
+def main(g,inpu,outpu):
+
+    # ALL OF THE INPUTS FROM USERS
+    R0 = inpu.R0
+    Z0 = inpu.Z0
+    phi0 = inpu.phi0
+    E0 = inpu.E0
+    pitch0 = inpu.pitch0
+    nseg = inpu.nseg
+    nstep = inpu.nstep
+    tstep = inpu.tstep
+    charge = inpu.charge
+    mass = inpu.mass
+    switch_full_orbit = inpu.switch_full_orbit
+    switch_calc_prob = inpu.switch_calc_prob
+
+    # ALL INPUTS ABOUT THE EQUILIBIRUM
+    R = g.r
+    Z = g.z
+    RR = g.rr
+    ZZ = g.zz
+    br = g.br
+    bz = g.bz
+    bt = g.bt
+    b = g.b
+    bc = g.bcentr
+    rmaxis = g.rmaxis
+    sibry = g.sibry
+    simag = g.simag
+    rbbbs = g.rbbbs
+    zbbbs = g.zbbbs
+    nr = g.nr
+    nz = g.nz
+    psi = g.psi
+    f_br = g.f_br
+    f_bz = g.f_bz
+    f_bt = g.f_bt
+    f_b = g.f_b
+    f_psi = g.f_psi
+    equ_curve = g.equ_curve[0]
+    equ_grad = g.equ_grad[0]
+
+# MAIN CLACULATION BEGINS FROM HERE
+    ini = com.f_ini(R0,Z0,E0,pitch0,phi0,charge,mass,f_br,f_bz,f_bt,f_psi)
     # all in SI unit
     pphi0 = ini['pphi0'] # ini. canonical toroidal momentum
     E0    = ini['E0']    # ini. energy [SI unit]
     # mu0 in unit of keV
     mu0   = ini['mu0']   # ini. magnetic momentum
 
-    murz = com.f_mu(R,E0,pphi0,b,bt,psi)
-    vpararz = com.f_vpara(R,b,bt,pphi0,psi)
-    Epara = 1/2.*gl.m*vpararz**2
+    murz = com.f_mu(R,E0,pphi0,b,bt,psi,charge,mass)
+    vpararz = com.f_vpara(R,b,bt,pphi0,psi,charge,mass)
+    Epara = 1/2.*mass*vpararz**2
     Eperp = E0 - Epara
     ob_contour \
     = com.f_mucontour(RR,ZZ,murz,vpararz,rbbbs,zbbbs,mu0,rmaxis,R0,Z0,nseg,f_psi,sibry,simag)
 
-    #pphi = pphi0/(simag-sibry)/gl.q
-    pphi = pphi0/sibry/gl.q
-    #pphi = pphi0/gl.q
-    mu_E = mu0*np.abs(bc)/(E0/1e3/gl.q)
+    #pphi = pphi0/(simag-sibry)/charge
+    pphi = pphi0/sibry/charge
+    #pphi = pphi0/charge
+    mu_E = mu0*np.abs(bc)/(E0/1e3/charge)
     ob   = ob_contour['orbit_class']
     fvpara = ob_contour['fvpara']
 
@@ -48,7 +74,7 @@ def main(
     rho = ob_contour['rho']
 
     ob_vpara = ob_contour['ob_vpara']
-    pitch = ob_vpara/(np.sqrt(2*E0/gl.m))
+    pitch = ob_vpara/(np.sqrt(2*E0/mass))
 
     # these guys will have ...
     vperp = np.zeros((nstep,3)) # perp. velocity
@@ -72,7 +98,7 @@ def main(
     if switch_full_orbit==1 and ob>3:
 
        # drift velocity perpendicular to B
-       u_grid = ugrid.main(nr,nz,RR,ZZ,Epara,Eperp,equ_curve,equ_grad)
+       u_grid = ugrid.main(nr,nz,RR,ZZ,Epara,Eperp,equ_curve,equ_grad,charge)
        f_u1 = u_grid['f_u1']
        f_u2 = u_grid['f_u2']
        f_u3 = u_grid['f_u3']
@@ -94,7 +120,7 @@ def main(
 
        # USED IN WEIGHT FUNCTION CALCULATION
        # calculate probability for the orbit
-       if calc_prob == 1:
+       if switch_calc_prob == 1:
           # get index where the orbit accomplish one full poloidal projection
           index = full_proj_pol(ob,obr,obz,ob_vpara,sol)
 
@@ -129,42 +155,39 @@ def main(
     # OUTPUT BELOW
     if switch_full_orbit == 0:
 
-       return {
-           'pphi' :  pphi,
-           'mu_E' :  mu_E,
-           'ob'   :  ob,
-           'obr'  :  obr,
-           'obz'  :  obz,
-           'pitch': pitch,
-           'Rmax' : np.max(obr),
-           'Pmax' : pitch[np.argmax(obr)],
-           'Zmax' : obz[np.argmax(obr)],
-           'rho'  : rho
-           }
+       outpu.pphi =  pphi,
+       outpu.mu_E =  mu_E,
+       outpu.ob   =  ob,
+       outpu.obr  =  obr,
+       outpu.obz  =  obz,
+       outpu.pitch= pitch,
+       outpu.Rmax = np.max(obr),
+       outpu.Pmax = pitch[np.argmax(obr)],
+       outpu.Zmax = obz[np.argmax(obr)],
+       outpu.rho  = rho
 
     elif switch_full_orbit ==1:
 
-       return {
-           'obxyz': obxyz,
-           'obr'  : obr,
-           'obz'  : obz,
-           'pitch': pitch,
-           'Rmax' : np.max(obr),
-           'Pmax' : pitch[np.argmax(obr)],
-           'Zmax' : obz[np.argmax(obr)],
-           'rho'  : rho,
+         outpu.obxyz= obxyz,
+         outpu.obr  = obr,
+         outpu.obz  = obz,
+         outpu.pitch= pitch,
+         outpu.Rmax = np.max(obr),
+         outpu.Pmax = pitch[np.argmax(obr)],
+         outpu.Zmax = obz[np.argmax(obr)],
+         outpu.rho  = rho,
 
-           'pphi' :  pphi,
-           'mu_E' :  mu_E,
-           'ob'   :  ob,
-           'steps':  steps,
+         outpu.pphi =  pphi,
+         outpu.mu_E =  mu_E,
+         outpu.ob   =  ob,
+         outpu.steps=  steps,
 
-           # OUTPUT OF FREQUENCY
-           'sol'  : sol,
-           'tsol' : tsol,
-           'f_phi':f_phi,
-           'f_theta':f_theta,
-           }
+         # OUTPUT OF FREQUENCY
+         outpu.sol  = sol,
+         outpu.tsol = tsol,
+         outpu.f_phi=f_phi,
+         outpu.f_theta=f_theta,
+    return outpu
 
 # PREPARE ODE EQUATION for ODE INTEGRATOR
 def ode_equ(y,t,f_u1,f_u2,f_u3,f_br,f_bt,f_bz,fvpara):

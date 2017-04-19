@@ -16,9 +16,11 @@ HISTORY:
 """
 
 import numpy as np
+import creatobj
 from util_tokamak import file_numbers, writef
 
 def read(f):
+    g = creatobj.gfile(f)
     """ Reads a G-EQDSK file
 
     Parameters
@@ -136,21 +138,30 @@ def read(f):
         z[:,j] = (zmid-0.5*zdim) + zdim*j/float(nh-1)
 
     # Create dictionary of values to return
-    result = {'nw': nw, 'nh':nh,        # Number of horizontal and vertical points
-              'r':r, 'z':z,                     # Location of the grid-poinst
-              'rdim':rdim, 'zdim':zdim,         # Size of the domain in meters
-              'rcentr':rcentr, 'bcentr':bcentr, # Reference vacuum toroidal field (m, T)
-              'rleft':rleft,                  # R of left side of domain
-              'zmid':zmid,                      # Z at the middle of the domain
-              'rmaxis':rmaxis, 'zmaxis':zmaxis,     # Location of magnetic axis
-              'simag':simag, # Poloidal flux at the axis (Weber / rad)
-              'sibry':sibry, # Poloidal flux at plasma boundary (Weber / rad)
-              'current':current,
-              'psirz':psirz,    # Poloidal flux in Weber/rad on grid points
-              'fpol':fpol,  # Poloidal current function on uniform flux grid
-              'pres':pres,  # Plasma pressure in nt/m^2 on uniform flux grid
-              'qpsi':qpsi,  # q values on uniform flux grid
-              'nbbbs':nbbbs, 'rbbbs':rbbbs, 'zbbbs':zbbbs, # Plasma boundary
-              'limitr':limitr, 'rlim':rlim, 'zlim':zlim} # Wall boundary
+    g.nw = nw
+    g.nh = nh
+    g.r = r
+    g.z = z
+    g.rdim = rdim
+    g.zdim = zdim
+    g.rcentr = rcentr
+    g.bcentr = bcentr
+    g.rleft = rleft
+    g.zmid = zmid
+    g.rmaxis = rmaxis
+    g.zmaxis = zmaxis
+    g.simag = simag
+    g.sibry = sibry
+    g.current = current
+    g.psirz = psirz
+    g.fpol = fpol
+    g.pres = pres
+    g.qpsi = qpsi
+    g.nbbbs = nbbbs
+    g.rbbbs = rbbbs
+    g.zbbbs = zbbbs
+    g.limitr = limitr
+    g.rlim = rlim
+    g.zlim = zlim
 
-    return result
+    return g
