@@ -166,16 +166,21 @@ def orbit_check(ob_vpara,obr,obz,rbbbs,zbbbs,rmaxis,f_psi,sibry,simag):
     # Conf. -  counter-Ip Passing  5
     # Conf. -  co-Ip Passing       6
 
-#    outboundary =  \
-#    [obr>np.max(rbbbs), obr<np.min(rbbbs), \
-#     obz>np.max(zbbbs), obz<np.min(zbbbs)]
+    # 20170418
+    # this is demonstrated to be not enough in some rare case,
+    # stronger constrain is developped
+    #outboundary =  \
+    #[obr>np.max(rbbbs), obr<np.min(rbbbs), \
+    # obz>np.max(zbbbs), obz<np.min(zbbbs)]
+
+    # 20170418
     rho = trace.RZ_to_RHO(obr,obz,f_psi,simag,sibry)
     if np.max(np.abs(rho)) > 1:
        outboundary = True
     else:
        outboundary = False
 
-    if outboundary: \
+    if outboundary:
        # hit the wall, lost particles
        if np.any(np.sign(ob_vpara) ==1) and np.any(np.sign(ob_vpara) ==-1):
           # lost, trapped particles

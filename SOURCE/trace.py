@@ -36,9 +36,9 @@ def main(
     ob_contour \
     = com.f_mucontour(RR,ZZ,murz,vpararz,rbbbs,zbbbs,mu0,rmaxis,R0,Z0,nseg,f_psi,sibry,simag)
 
-    #pphi = pphi0/(simag-sibry)/gl.q
-    pphi = pphi0/sibry/gl.q
-    #pphi = pphi0/gl.q
+    # normalized pphi
+    pphi = (pphi0/gl.q-simag)/(sibry-simag)
+    # normalized mu
     mu_E = mu0*np.abs(bc)/(E0/1e3/gl.q)
     ob   = ob_contour['orbit_class']
     fvpara = ob_contour['fvpara']
