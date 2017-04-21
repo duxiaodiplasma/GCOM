@@ -53,22 +53,22 @@ def main(g):
 
    f_psi = interpolate.interp2d(zz, rr, psirz, kind='cubic')
 #   #
-   new_nr = 204
-   new_nz = 204
-   new_rr = np.linspace(np.min(rr),np.max(rr),new_nr)
-   new_zz = np.linspace(np.min(zz),np.max(zz),new_nz)
-   new_psirz = np.zeros((new_nr,new_nz))
-   new_psirz = f_psi(new_zz,new_rr)
-   new_r = np.tile(new_rr,new_nr).reshape((new_nr,new_nz)).transpose()
-   new_z = np.tile(new_zz,new_nz).reshape((new_nr,new_nz))
-
-   nr = np.copy(new_nr)
-   nz = np.copy(new_nz)
-   rr = np.copy(new_rr)
-   zz = np.copy(new_zz)
-   r  = np.copy(new_r)
-   z  = np.copy(new_z)
-   psirz = np.copy(new_psirz)
+#   new_nr = 504
+#   new_nz = 504
+#   new_rr = np.linspace(np.min(rr),np.max(rr),new_nr)
+#   new_zz = np.linspace(np.min(zz),np.max(zz),new_nz)
+#   new_psirz = np.zeros((new_nr,new_nz))
+#   new_psirz = f_psi(new_zz,new_rr)
+#   new_r = np.tile(new_rr,new_nr).reshape((new_nr,new_nz)).transpose()
+#   new_z = np.tile(new_zz,new_nz).reshape((new_nr,new_nz))
+#
+#   nr = np.copy(new_nr)
+#   nz = np.copy(new_nz)
+#   rr = np.copy(new_rr)
+#   zz = np.copy(new_zz)
+#   r  = np.copy(new_r)
+#   z  = np.copy(new_z)
+#   psirz = np.copy(new_psirz)
 
    # ---------
 

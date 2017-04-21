@@ -63,7 +63,7 @@ def main(g,inpu,outpu):
     = com.f_mucontour(RR,ZZ,murz,vpararz,rbbbs,zbbbs,mu0,rmaxis,R0,Z0,nseg,f_psi,sibry,simag)
 
     #pphi = pphi0/(simag-sibry)/charge
-    pphi = pphi0/sibry/charge
+    pphi = (pphi0/charge-simag)/(sibry-simag)
     #pphi = pphi0/charge
     mu_E = mu0*np.abs(bc)/(E0/1e3/charge)
     ob   = ob_contour['orbit_class']
@@ -117,7 +117,6 @@ def main(g,inpu,outpu):
        obxyz[:,1] = sol[:,0]*np.sin(sol[:,1])
        obxyz[:,2] = sol[:,2]
 
-
        # USED IN WEIGHT FUNCTION CALCULATION
        # calculate probability for the orbit
        if switch_calc_prob == 1:
@@ -151,43 +150,45 @@ def main(g,inpu,outpu):
           # to save the computing time...
           obxyz = np.copy(obxyz[0:index+1,:])
 
-
     # OUTPUT BELOW
     if switch_full_orbit == 0:
 
-       outpu.pphi =  pphi,
-       outpu.mu_E =  mu_E,
-       outpu.ob   =  ob,
-       outpu.obr  =  obr,
-       outpu.obz  =  obz,
-       outpu.pitch= pitch,
-       outpu.Rmax = np.max(obr),
-       outpu.Pmax = pitch[np.argmax(obr)],
-       outpu.Zmax = obz[np.argmax(obr)],
-       outpu.rho  = rho
+           outpu.pphi =  pphi,
+           outpu.mu_E =  mu_E,
+           outpu.ob   =  ob,
+           outpu.obr  =  obr,
+           outpu.obz  =  obz,
+           outpu.pitch= pitch,
+           outpu.Rmax = np.max(obr),
+           outpu.Pmax = pitch[np.argmax(obr)],
+           outpu.Zmax = obz[np.argmax(obr)],
+           outpu.rho  = rho
+
 
     elif switch_full_orbit ==1:
 
-         outpu.obxyz= obxyz,
-         outpu.obr  = obr,
-         outpu.obz  = obz,
-         outpu.pitch= pitch,
-         outpu.Rmax = np.max(obr),
-         outpu.Pmax = pitch[np.argmax(obr)],
-         outpu.Zmax = obz[np.argmax(obr)],
-         outpu.rho  = rho,
+           outpu.obxyz= obxyz,
+           outpu.obr  = obr,
+           outpu.obz  = obz,
+           outpu.pitch= pitch,
+           outpu.Rmax = np.max(obr),
+           outpu.Pmax = pitch[np.argmax(obr)],
+           outpu.Zmax = obz[np.argmax(obr)],
+           outpu.rho  = rho,
 
-         outpu.pphi =  pphi,
-         outpu.mu_E =  mu_E,
-         outpu.ob   =  ob,
-         outpu.steps=  steps,
+           outpu.pphi =  pphi,
+           outpu.mu_E =  mu_E,
+           outpu.ob   =  ob,
+           outpu.steps=  steps,
 
-         # OUTPUT OF FREQUENCY
-         outpu.sol  = sol,
-         outpu.tsol = tsol,
-         outpu.f_phi=f_phi,
-         outpu.f_theta=f_theta,
+           # OUTPUT OF FREQUENCY
+           outpu.sol  = sol,
+           outpu.tsol = tsol,
+           outpu.f_phi=f_phi,
+           outpu.f_theta=f_theta,
+
     return outpu
+
 
 # PREPARE ODE EQUATION for ODE INTEGRATOR
 def ode_equ(y,t,f_u1,f_u2,f_u3,f_br,f_bt,f_bz,fvpara):
@@ -204,7 +205,7 @@ def ode_equ(y,t,f_u1,f_u2,f_u3,f_br,f_bt,f_bz,fvpara):
     vperp[1] = f_u2(Z_i0,R_i0) # phi
     vperp[2] = f_u3(Z_i0,R_i0) # Z
 
-    # magnetic fieed vecotr in RPHIZ coordinate
+    # magnetic field vecotr in RPHIZ coordinate
     brzt[0]  = f_br(Z_i0,R_i0) # br
     brzt[1]  = f_bt(Z_i0,R_i0) # bphi
     brzt[2]  = f_bz(Z_i0,R_i0) # bz
@@ -243,7 +244,7 @@ def full_proj_pol(ob,obr,obz,ob_vpara,sol):
        # In the next period, find the minimum difference value from index
        index = mask[0]+1+np.argmin(np.abs(angle[mask[0]+1:mask[1]]-angle[0]))
     else:
-       print('not finish one full poloidal projection')
+       #print('not finish one full poloidal projection')
        index = -1
 
     return index
