@@ -13,7 +13,7 @@ import trace
 # dummy
 inpu = creatobj.inpu(0, 0, 0, 0, 0)
 inpu.fn='/home/duxiaodi/GCOM/GCOM_v2/IN/g165037.03705'
-inpu.cores = 10
+inpu.cores = 12
 inpu.nseg = 1000
 inpu.nstep = 200000
 inpu.tstep = 3e-10
@@ -31,12 +31,13 @@ g = ugrid.equ(g)
 # generate scan step
 outpu = creatobj.outpu('165037_benchmark_final')
 
-inpu.R_array = np.arange(1.5,2.35,0.1)
+inpu.R_array = np.arange(1.05,2.35,0.05)
 inpu.Z_array = np.arange(-1.2,1.2,0.1)
-inpu.pitch_array = np.arange(-1,1.05,0.1)
+inpu.pitch_array = np.arange(-1,1.05,0.05)
 inpu.phi0 = 0
 inpu.E0 = 60
 
+output = np.zeros((len(inpu.Z_array),len(inpu.pitch_array),11))
 def PARA_SCAN(g,inpu,outpu,i):
 
     for j in range(0,len(inpu.Z_array)):
@@ -48,18 +49,17 @@ def PARA_SCAN(g,inpu,outpu,i):
 
             outpu = trace.main(g,inpu,outpu)
 
-            output = np.zeros((len(inpu.Z_array),len(inpu.pitch_array),11))
             output[j,k,0]  = inpu.R0
             output[j,k,1]  = inpu.Z0
             output[j,k,2]  = inpu.pitch0
             output[j,k,3]  = inpu.E0
-            output[j,k,4]  = outpu.ob[0]
-            output[j,k,5]  = outpu.pphi[0]
-            output[j,k,6]  = outpu.mu_E[0]
-            output[j,k,7]  = outpu.f_phi[0]
-            output[j,k,8]  = outpu.f_theta[0]
-            output[j,k,9]  = np.min(outpu.rho[0])
-            output[j,k,10] = np.max(outpu.rho[0])
+            output[j,k,4]  = outpu.ob
+            output[j,k,5]  = outpu.pphi
+            output[j,k,6]  = outpu.mu_E
+            output[j,k,7]  = outpu.f_phi
+            output[j,k,8]  = outpu.f_theta
+            output[j,k,9]  = np.min(outpu.rho)
+            output[j,k,10] = np.max(outpu.rho)
 
     return output
 
