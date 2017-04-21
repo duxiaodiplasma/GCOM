@@ -113,6 +113,7 @@ def f_mucontour(r,z,murz,vpararz,rbbbs,zbbbs,mu0,rmaxis,R0,Z0,nseg,f_psi,sibry,s
     allobz = np.zeros(1)
     minall = np.zeros(len(p))
 
+    rho = trace.RZ_to_RHO(obr,obz,f_psi,simag,sibry)
     if len(p) >0:
 
        for subline in np.arange(len(p)):
@@ -133,8 +134,7 @@ def f_mucontour(r,z,murz,vpararz,rbbbs,zbbbs,mu0,rmaxis,R0,Z0,nseg,f_psi,sibry,s
            ob_vpara_tmp[i] = fvpara(obz[i],obr[i])
 
        # give the orbit class
-       orbit_class,rho \
-       = orbit_check(ob_vpara_tmp,obr,obz,rbbbs,zbbbs,rmaxis,f_psi,sibry,simag)
+       orbit_class = orbit_check(ob_vpara_tmp,rho)
 
        # interpolatation for fine resolution
        tck, u = interpolate.splprep([obr,obz],s=0)
@@ -150,14 +150,14 @@ def f_mucontour(r,z,murz,vpararz,rbbbs,zbbbs,mu0,rmaxis,R0,Z0,nseg,f_psi,sibry,s
             'obr'         : obr,
             'obz'         : obz,
             'orbit_class' : orbit_class,
+            'rho'         : rho
             'ob_vpara'    : ob_vpara,
             'fvpara'      : fvpara,
             'levels'      : levels,
-            'rho'         : rho
            }
 
 
-def orbit_check(ob_vpara,obr,obz,rbbbs,zbbbs,rmaxis,f_psi,sibry,simag):
+def orbit_check(ob_vpara,rho):
     """ identify the orbit type from vpara """
     # Lost  -  Trapped             1
     # Lost  -  counter-Ip Passing  2
@@ -174,7 +174,6 @@ def orbit_check(ob_vpara,obr,obz,rbbbs,zbbbs,rmaxis,f_psi,sibry,simag):
     # obz>np.max(zbbbs), obz<np.min(zbbbs)]
 
     # 20170418
-    rho = trace.RZ_to_RHO(obr,obz,f_psi,simag,sibry)
     if np.max(np.abs(rho)) > 1:
        outboundary = True
     else:

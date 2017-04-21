@@ -56,9 +56,9 @@ def PARA_FI(R_array,Z_array,E_array,P_array,i):
           cal_prob,
           R,Z,RR,ZZ,
           br,bz,bt,b,
-          bc,rmaxis,sibry,rbbbs,zbbbs,
+          bc,rmaxis,sibry,simag,rbbbs,zbbbs,
           nr,nz,psi,
-          f_br,f_bz,f_bt,f_b,
+          f_br,f_bz,f_bt,f_b,f_psi,
           equ_curve,equ_grad
           )
 

@@ -13,7 +13,9 @@ Eini =60
 #comment = '165037'
 #comment = '159243_p'
 #comment = '165042'
-comment = '165037'
+comment = '165037_test_update'
+#comment = '165037_benchmark'
+#comment = '165037_benchmark_update2'
 #comment = '165037_won'
 fn = np.load('/home/duxiaodi/GCOM/GCOM_v2/RESONANCE/OUT/Kathreen_'
               +np.str(Eini)+'_'+np.str(comment)+'.npz')
@@ -21,10 +23,19 @@ output = fn['output']
 #fn2 = np.load('/home/duxiaodi/GCOM/GCOM_v2/RESONANCE/OUT/FI_'+np.str(Eini)+'_'+comment+'.npz')
 #output2 = fn2['output']
 
+#R0 = output[:,0]
+#Z0 = output[:,1]
+#ob = output[:,4]
+#pphi = output[:,5]
+#mu_E = output[:,6]
+#fphi = output[:,7]
+#ftheta = output[:,8]
+#rhomin = output[:,9]
+#rhomax = output[:,10]
 R0 = np.reshape(output[:,:,:,0],np.size(output)/len(output[0,0,0,:]))
 Z0 = np.reshape(output[:,:,:,1],np.size(output)/len(output[0,0,0,:]))
 ob = np.reshape(output[:,:,:,4],np.size(output)/len(output[0,0,0,:]))
-pphi = np.reshape(output[:,:,:,5],np.size(output)/len(output[0,0,0,:]))
+pphi = -np.reshape(output[:,:,:,5],np.size(output)/len(output[0,0,0,:]))
 mu_E = np.reshape(output[:,:,:,6],np.size(output)/len(output[0,0,0,:]))
 fphi = np.reshape(output[:,:,:,7],np.size(output)/len(output[0,0,0,:]))
 ftheta = np.reshape(output[:,:,:,8],np.size(output)/len(output[0,0,0,:]))
@@ -41,7 +52,7 @@ def normalize(data):
 
 def int_p(p,intp,msrho):
     mask = np.where(((ob > 3) & (mu_E>0))
-                  & ((p>(intp-0.6)) & (p<(intp+0.6)))
+                  & ((p>(intp-0.2)) & (p<(intp+0.2)))
                   & (((rhomin<msrho[1]) & (rhomin>msrho[0]))
                   | ((rhomax<msrho[1]) & (rhomax>msrho[0])))
                     )
@@ -68,7 +79,7 @@ plt.title('$f_{mode}=$'+np.str(fmode)+'$kHz$'+'   $n=$'+np.str(nmode)+
 
 
 
-plt.xlim(-2,9)
+plt.xlim(-2,1)
 plt.ylim(-0.2,1.4)
 
 matplotlib.interactive('t')

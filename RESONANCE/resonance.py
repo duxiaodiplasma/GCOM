@@ -15,17 +15,14 @@ from joblib import Parallel, delayed
 from progressbar import ProgressBar
 
 
-#R0 = np.arange(1.0,2.35,0.05)
-#Z0 = np.arange(-0.8,0.81,0.1)
-#pitch0 = np.arange(-1,1.05,0.05)
-R0 = np.arange(1.0,2.3,0.1)
-Z0 = np.arange(-0.8,0.8,0.1)
-pitch0 = np.arange(-1,1,0.1)
+R0 = np.arange(1.05,2.35,0.05)
+Z0 = np.arange(-1.2,1.2,0.1)
+pitch0 = np.arange(-1,1.05,0.05)
 
 E0 = 60
 #comment = '165042'
 #comment = '165037'
-comment = '165037_won'
+comment = '165037_test_update'
 #comment = '159243_p'
 
 nseg   = 1000
@@ -76,7 +73,7 @@ def PARA_RESONANCE(i):
     return output
 
 if __name__ == '__main__':
-    output = Parallel(n_jobs=12)(delayed(PARA_RESONANCE)(i) \
+    output = Parallel(n_jobs=10,verbose=5)(delayed(PARA_RESONANCE)(i) \
              for i in range(0,len(R0)) \
              )
 

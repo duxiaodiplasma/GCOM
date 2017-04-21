@@ -14,8 +14,10 @@ Eini =60
 #comment = '165865'
 #comment = '165042'
 comment = '165037'
+comment = '165037_test'
+comment1 = '165037_benchmark'
 fn = np.load('/home/duxiaodi/GCOM/GCOM_v2/RESONANCE/OUT/Kathreen_'
-              +np.str(Eini)+'_'+np.str(comment)+'.npz')
+              +np.str(Eini)+'_'+np.str(comment1)+'.npz')
 output = fn['output']
 
 def fi(Eini,comment):
