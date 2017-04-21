@@ -19,7 +19,7 @@ pitch0 = np.arange(-1,1.05,0.05)
 E0 = 60
 #comment = '165042'
 #comment = '165037'
-comment = '165037_test_update'
+comment = '165037_benchmark_final_old'
 #comment = '159243_p'
 
 nseg   = 1000
@@ -71,10 +71,9 @@ def PARA_RESONANCE(i):
     return output
 
 if __name__ == '__main__':
-    output = Parallel(n_jobs=1,verbose=5)(delayed(PARA_RESONANCE)(i) \
+    output = Parallel(n_jobs=10,verbose=5)(delayed(PARA_RESONANCE)(i) \
              for i in range(0,len(R0)) \
              )
-
 np.savez('/home/duxiaodi/GCOM/GCOM_v2/RESONANCE/OUT/Kathreen_'+np.str(E0)+'_'+np.str(comment)+'.npz',
       output = output)
 
