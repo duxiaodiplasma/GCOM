@@ -52,7 +52,7 @@ def main(g):
        zz[i] = z[0, i]
 
    f_psi = interpolate.interp2d(zz, rr, psirz, kind='cubic')
-#   #
+#  this seems to be meaningless
 #   new_nr = 504
 #   new_nz = 504
 #   new_rr = np.linspace(np.min(rr),np.max(rr),new_nr)

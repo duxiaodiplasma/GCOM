@@ -13,8 +13,10 @@ from scipy.signal import savgol_filter
 def f_pphi(R,bphi,b,v_para,psi,charge,mass):
     """ calculate canonical toroial momentum """
     pphi = mass*R*(bphi/b)*v_para+charge*psi
-    # not sure plus or minus
-    #= mass*R*(bphi/b)*v_para+charge*psi
+    # not sure plus or minus (this depends on the definition of the pitch)
+    # if plus, for +Ip case and -Bt case, the plus pitch indicates the co-passing
+    # if minus, for +Ip case and -Bt case, the plus pitch indicates the counter-passing
+    # pphi = -mass*R*(bphi/b)*v_para+charge*psi
     return pphi
 
 

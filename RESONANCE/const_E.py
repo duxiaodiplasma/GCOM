@@ -10,9 +10,9 @@ import ugrid
 import trace
 
 
-# dummy
+# dummy, usually do not need to change
 inpu = creatobj.inpu(0, 0, 0, 0, 0)
-inpu.fn='/home/duxiaodi/GCOM/GCOM_v2/IN/g165037.03705'
+inpu.gfile='/home/duxiaodi/GCOM/GCOM_v2/IN/g165037.03705'
 inpu.cores = 12
 inpu.nseg = 1000
 inpu.nstep = 200000
@@ -20,23 +20,26 @@ inpu.tstep = 3e-10
 inpu.charge = 1.6*(1e-19)
 inpu.mass = 2*1.67*(1e-27)
 inpu.switch_full_orbit = 1
-inpu.switch_calc_prob = 1
-inpu.path = '/home/duxiaodi/GCOM_v3/GCOM/RESONANCE/output/Kathreen_'
+inpu.switch_calc_freq = 1
 
-# calculate equilibru
-g = geqdsk.read(inpu.fn)
-g = bgrid.main(g)
-g = ugrid.equ(g)
-
-# generate scan step
-outpu = creatobj.outpu('165037_benchmark_final')
-
-inpu.R_array = np.arange(1.05,2.35,0.05)
-inpu.Z_array = np.arange(-1.2,1.2,0.1)
-inpu.pitch_array = np.arange(-1,1.05,0.05)
+# real input for scanning
+inpu.R_array = np.arange(1.2,2.25,0.01)
+inpu.Z_array = np.arange(0,0.1,0.1)
+inpu.pitch_array = np.arange(-1,1.05,0.01)
 inpu.phi0 = 0
 inpu.E0 = 60
 
+# prepare output
+# generate scan step
+outpu = creatobj.outpu('Kathreen_165037_60keV')
+outpu.path = '/home/duxiaodi/GCOM_v3/GCOM/RESONANCE/output/'
+
+# calculate equilibrum
+g = geqdsk.read(inpu.gfile)
+g = bgrid.main(g)
+g = ugrid.equ(g)
+
+# real calculation begins from here
 output = np.zeros((len(inpu.Z_array),len(inpu.pitch_array),11))
 def PARA_SCAN(g,inpu,outpu,i):
 
@@ -68,8 +71,8 @@ if __name__ == '__main__':
     output = Parallel(n_jobs=inpu.cores,verbose=5)(delayed(PARA_SCAN)(g,inpu,outpu,i) \
              for i in range(0,len(inpu.R_array)))
 
-    fn = inpu.path+np.str(inpu.E0)+'_'+outpu.comment+'.npz'
-    np.savez(fn,output=output)
+    outpu.fn = outpu.path+outpu.comment+'.npz'
+    np.savez(outpu.fn,output=output)
 
 
 

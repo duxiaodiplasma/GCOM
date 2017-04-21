@@ -10,13 +10,11 @@ import bgrid
 import ugrid
 import trace
 
-#1.3000000000000003, -1.0999999999999999, 0.60000000000000142
-#2.25, -0.7999999999999996, -0.70000000000000007
-#                   (R,    Z,   phi, pitch, E)
-inpu = creatobj.inpu(2.25, 0, 0.0,  0, 60)
+#                   (R,    Z, phi, pitch, E)
+inpu = creatobj.inpu(1.90, 0, 0.0,  0.8,  60)
 inpu.nseg = 1000
-inpu.nstep = 2000000
-inpu.tstep = 3e-10
+inpu.nstep = 6000000
+inpu.tstep = 1e-10
 inpu.charge = 1.6*(1e-19)
 inpu.mass = 2*1.67*(1e-27)
 # note that for trapped particle,
@@ -37,7 +35,7 @@ import timeit
 t0 = timeit.default_timer()
 outpu = trace.main(g,inpu,outpu)
 t1 = timeit.default_timer()
-print(t1-t0)
+print('consumed time [s] :', t1-t0 )
 
 
 

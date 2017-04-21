@@ -19,7 +19,7 @@ def main(g,inpu,outpu):
     charge = inpu.charge
     mass = inpu.mass
     switch_full_orbit = inpu.switch_full_orbit
-    switch_calc_prob = inpu.switch_calc_prob
+    switch_calc_freq = inpu.switch_calc_freq
 
     # ALL INPUTS ABOUT THE EQUILIBIRUM
     R = g.r
@@ -119,7 +119,7 @@ def main(g,inpu,outpu):
 
        # USED IN WEIGHT FUNCTION CALCULATION
        # calculate probability for the orbit
-       if switch_calc_prob == 1:
+       if switch_calc_freq == 1:
           # get index where the orbit accomplish one full poloidal projection
           index = full_proj_pol(ob,obr,obz,ob_vpara,sol)
 

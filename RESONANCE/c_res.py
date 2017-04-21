@@ -10,9 +10,9 @@ import matplotlib.mlab as mlab
 
 Eini = 60
 comment = '165037_benchmark_update4'
-comment = '165037_benchmark_final'
-fn = np.load('/home/duxiaodi/GCOM_v3/GCOM/RESONANCE/output/Kathreen_'
-              +np.str(Eini)+'_'+np.str(comment)+'.npz')
+comment = '165037_benchmark_final1'
+fn = np.load('/home/duxiaodi/GCOM_v3/GCOM/RESONANCE/output/Kathreen_165037_60keV.npz')
+
 output = fn['output']
 #fn2 = np.load('/home/duxiaodi/GCOM/GCOM_v2/RESONANCE/OUT/FI_'+np.str(Eini)+'_'+comment+'.npz')
 #output2 = fn2['output']
@@ -36,7 +36,7 @@ def normalize(data):
 
 def int_p(p,intp,msrho):
     mask = np.where(((ob > 3) & (mu_E>0))
-                  & ((p>(intp-0.2)) & (p<(intp+0.2)))
+                  & ((p>(intp-0.1)) & (p<(intp+0.1)))
                   & (((rhomin<msrho[1]) & (rhomin>msrho[0]))
                   | ((rhomax<msrho[1]) & (rhomax>msrho[0])))
                     )
@@ -44,7 +44,7 @@ def int_p(p,intp,msrho):
     return mask[0]
 
 
-msmin,msmax = 0.,1.0
+msmin,msmax = 0.,1
 fmode = 6
 nmode = 1
 mmode=1
@@ -60,7 +60,7 @@ plt.clf()
 plt.title('$f_{mode}=$'+np.str(fmode)+'$kHz$'+'   $n=$'+np.str(nmode)+
           '  E='+np.str(Eini)+'keV'+'   '+comment)
 
-plt.xlim(-2,1)
+plt.xlim(-1.5,0.7)
 plt.ylim(-0.2,1.4)
 
 matplotlib.interactive('t')
