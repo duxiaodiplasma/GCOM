@@ -153,39 +153,39 @@ def main(g,inpu,outpu):
     # OUTPUT BELOW
     if switch_full_orbit == 0:
 
-           outpu.pphi =  pphi,
-           outpu.mu_E =  mu_E,
-           outpu.ob   =  ob,
-           outpu.obr  =  obr,
-           outpu.obz  =  obz,
-           outpu.pitch= pitch,
-           outpu.Rmax = np.max(obr),
-           outpu.Pmax = pitch[np.argmax(obr)],
-           outpu.Zmax = obz[np.argmax(obr)],
+           outpu.pphi =  pphi
+           outpu.mu_E =  mu_E
+           outpu.ob   =  ob
+           outpu.obr  =  obr
+           outpu.obz  =  obz
+           outpu.pitch= pitch
+           outpu.Rmax = np.max(obr)
+           outpu.Pmax = pitch[np.argmax(obr)]
+           outpu.Zmax = obz[np.argmax(obr)]
            outpu.rho  = rho
 
 
     elif switch_full_orbit ==1:
 
-           outpu.obxyz= obxyz,
-           outpu.obr  = obr,
-           outpu.obz  = obz,
-           outpu.pitch= pitch,
-           outpu.Rmax = np.max(obr),
-           outpu.Pmax = pitch[np.argmax(obr)],
-           outpu.Zmax = obz[np.argmax(obr)],
+           outpu.obxyz= obxyz
+           outpu.obr  = obr
+           outpu.obz  = obz
+           outpu.pitch= pitch
+           outpu.Rmax = np.max(obr)
+           outpu.Pmax = pitch[np.argmax(obr)]
+           outpu.Zmax = obz[np.argmax(obr)]
            outpu.rho  = rho,
 
-           outpu.pphi =  pphi,
-           outpu.mu_E =  mu_E,
-           outpu.ob   =  ob,
-           outpu.steps=  steps,
+           outpu.pphi =  pphi
+           outpu.mu_E =  mu_E
+           outpu.ob   =  ob
+           outpu.steps=  steps
 
            # OUTPUT OF FREQUENCY
-           outpu.sol  = sol,
-           outpu.tsol = tsol,
-           outpu.f_phi=f_phi,
-           outpu.f_theta=f_theta,
+           outpu.sol  = sol
+           outpu.tsol = tsol
+           outpu.f_phi=f_phi
+           outpu.f_theta=f_theta
 
     return outpu
 

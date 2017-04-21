@@ -10,6 +10,7 @@ import matplotlib.mlab as mlab
 
 Eini = 60
 comment = '165037_benchmark_update4'
+comment = '165037_benchmark_final'
 fn = np.load('/home/duxiaodi/GCOM_v3/GCOM/RESONANCE/output/Kathreen_'
               +np.str(Eini)+'_'+np.str(comment)+'.npz')
 output = fn['output']

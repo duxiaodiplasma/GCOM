@@ -13,7 +13,7 @@ import trace
 # dummy
 inpu = creatobj.inpu(0, 0, 0, 0, 0)
 inpu.fn='/home/duxiaodi/GCOM/GCOM_v2/IN/g165037.03705'
-inpu.cores = 1
+inpu.cores = 10
 inpu.nseg = 1000
 inpu.nstep = 200000
 inpu.tstep = 3e-10
@@ -29,11 +29,11 @@ g = bgrid.main(g)
 g = ugrid.equ(g)
 
 # generate scan step
-outpu = creatobj.outpu('165037_benchmark_update4')
+outpu = creatobj.outpu('165037_benchmark_final')
 
-inpu.R_array = np.arange(1.05,2.35,0.05)
+inpu.R_array = np.arange(1.5,2.35,0.1)
 inpu.Z_array = np.arange(-1.2,1.2,0.1)
-inpu.pitch_array = np.arange(-1,1.05,0.05)
+inpu.pitch_array = np.arange(-1,1.05,0.1)
 inpu.phi0 = 0
 inpu.E0 = 60
 
@@ -46,7 +46,7 @@ def PARA_SCAN(g,inpu,outpu,i):
             inpu.Z0 = inpu.Z_array[j]
             inpu.pitch0 = inpu.pitch_array[k]
 
-            out = trace.main(g,inpu,outpu)
+            outpu = trace.main(g,inpu,outpu)
 
             output = np.zeros((len(inpu.Z_array),len(inpu.pitch_array),11))
             output[j,k,0]  = inpu.R0
@@ -60,7 +60,6 @@ def PARA_SCAN(g,inpu,outpu,i):
             output[j,k,8]  = outpu.f_theta[0]
             output[j,k,9]  = np.min(outpu.rho[0])
             output[j,k,10] = np.max(outpu.rho[0])
-            print(outpu.ob[0],inpu.R0,inpu.Z0,outpu.pphi[0],outpu.mu_E[0])
 
     return output
 
@@ -69,8 +68,8 @@ if __name__ == '__main__':
     output = Parallel(n_jobs=inpu.cores,verbose=5)(delayed(PARA_SCAN)(g,inpu,outpu,i) \
              for i in range(0,len(inpu.R_array)))
 
-fn = inpu.path+np.str(inpu.E0)+'_'+outpu.comment+'.npz'
-np.savez(fn,output=output)
+    fn = inpu.path+np.str(inpu.E0)+'_'+outpu.comment+'.npz'
+    np.savez(fn,output=output)
 
 
 
