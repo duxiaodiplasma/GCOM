@@ -72,6 +72,11 @@ def plot(r,mask=None,fi=None,loss=None):
     plt.clf()
     matplotlib.interactive('t')
     ax = plt.subplot(111)
+    import matplotlib as mpl
+    label_size = 15
+    mpl.rcParams['xtick.labelsize'] = label_size
+    mpl.rcParams['ytick.labelsize'] = label_size
+    mpl.rcParams['axes.labelsize'] = 17
 
     if loss != None:
        m1 = np.where(r.ob==1)
@@ -84,15 +89,13 @@ def plot(r,mask=None,fi=None,loss=None):
        f3 = ax.scatter(pphi[m3],mu_E[m3],c ='orange',alpha=0.1,marker='x')
 
     m5 = np.where(r.ob==5)
-    f5 = ax.plot(pphi[m5],mu_E[m5],
-        alpha=0.05,color='red')
+    f5 = ax.plot(pphi[m5],mu_E[m5],alpha=0.3,color='crimson')
 
     m4 = np.where(r.ob==4)
-    f4 = ax.plot(pphi[m4],mu_E[m4],
-           alpha=0.4,color='green')
+    f4 = ax.plot(pphi[m4],mu_E[m4],alpha=0.3,color='green')
 
     m6 = np.where(r.ob==6)
-    f6 = ax.plot(pphi[m6],mu_E[m6],alpha=0.2,color='blue')
+    f6 = ax.plot(pphi[m6],mu_E[m6],alpha=0.3,color='blue')
 
     sc=ax.scatter(pphi[mask],mu_E[mask],color='black',marker='o',s=40)
 
@@ -108,7 +111,14 @@ def plot(r,mask=None,fi=None,loss=None):
     return
 
 
-fn = '/home/duxiaodi/GCOM_v3/GCOM/RESONANCE/output/Kathreen_165037_60keV.npz'
+# Kathereen fishbone
+#fn = '/home/duxiaodi/GCOM_v3/GCOM/RESONANCE/output/Kathreen_165037_60keV.npz'
+#r = read(fn)
+#mask = resonance(r,fishbone=1,AE=0,fmode=6,tolerance=0.5,m=0,n=1,rhorange=[0,1.])
+#plot(r,mask)
+
+# Kathereen AE
+fn = '/home/duxiaodi/GCOM/GCOM_v2/RESONANCE/OUT/FI_60_165037.npz'
 r = read(fn)
-mask = resonance(r,fishbone=1,AE=0,fmode=6,tolerance=0.5,m=0,n=1,rhorange=[0,0.6])
+mask = resonance(r,AE=0,fmode=150,tolerance=0.5,m=0,n=1,rhorange=[0,1.])
 plot(r,mask)

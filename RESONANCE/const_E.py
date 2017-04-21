@@ -9,10 +9,24 @@ import bgrid
 import ugrid
 import trace
 
+"""
+-------------------
+DEVELOPER MESSAGE |
+-------------------
++ 20170421 SOVLE THE DATA SCATTER FOR FISHBONE RESONANCE
+- Scan all R,Z,PITCH is dumb one. But It should not be different from R, pitch only
+But it turns out that the it indeed different.
+
+- Scan R, Z, Pitch give scatters data. This might be due to the starting point is close to banana tip, where particle stays there for lots of time. If the steps is not short enough, this will gives significant error bar!i
+
+- Instead, if starting point from midplane, when the time fraction spent there in mid-plane is fairly short, therefore the uncertanties due to the steps is fairly small, indeed negligible.
+Therefore make sure that we should always scan from the mid=plane
+
+"""
 
 # dummy, usually do not need to change
 inpu = creatobj.inpu(0, 0, 0, 0, 0)
-inpu.gfile='/home/duxiaodi/GCOM/GCOM_v2/IN/g165037.03705'
+inpu.gfile='/home/duxiaodi/thomek/g165865.03705'
 inpu.cores = 12
 inpu.nseg = 1000
 inpu.nstep = 200000
@@ -24,8 +38,8 @@ inpu.switch_calc_freq = 1
 
 # real input for scanning
 inpu.R_array = np.arange(1.2,2.25,0.01)
-inpu.Z_array = np.arange(0,0.1,0.1)
-inpu.pitch_array = np.arange(-1,1.05,0.01)
+inpu.Z_array = np.array([0])
+inpu.pitch_array = np.arange(-1,1.01,0.01)
 inpu.phi0 = 0
 inpu.E0 = 60
 
