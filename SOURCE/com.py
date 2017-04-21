@@ -113,7 +113,7 @@ def f_mucontour(r,z,murz,vpararz,rbbbs,zbbbs,mu0,rmaxis,R0,Z0,nseg,f_psi,sibry,s
     allobz = np.zeros(1)
     minall = np.zeros(len(p))
 
-    rho = trace.RZ_to_RHO(obr,obz,f_psi,simag,sibry)
+    rho = np.zeros(1)+2 # dummy rho
     if len(p) >0:
 
        for subline in np.arange(len(p)):
@@ -134,6 +134,7 @@ def f_mucontour(r,z,murz,vpararz,rbbbs,zbbbs,mu0,rmaxis,R0,Z0,nseg,f_psi,sibry,s
            ob_vpara_tmp[i] = fvpara(obz[i],obr[i])
 
        # give the orbit class
+       rho = trace.RZ_to_RHO(obr,obz,f_psi,simag,sibry)
        orbit_class = orbit_check(ob_vpara_tmp,rho)
 
        # interpolatation for fine resolution
@@ -150,7 +151,7 @@ def f_mucontour(r,z,murz,vpararz,rbbbs,zbbbs,mu0,rmaxis,R0,Z0,nseg,f_psi,sibry,s
             'obr'         : obr,
             'obz'         : obz,
             'orbit_class' : orbit_class,
-            'rho'         : rho
+            'rho'         : rho,
             'ob_vpara'    : ob_vpara,
             'fvpara'      : fvpara,
             'levels'      : levels,
@@ -201,7 +202,7 @@ def orbit_check(ob_vpara,rho):
           # Confined co-Ip passing particle, always one direction in v_para
           orb = 6
 
-    return orb,rho
+    return orb
 
 def ob_stream(obr,obz):
 

@@ -1,10 +1,7 @@
 
 import sys
-sys.path.insert(0, './SOURCE')
-sys.path.insert(0, './WEIGHT')
-sys.path.insert(0, './INOUT')
-sys.path.insert(0, './C_RESULT')
-sys.path.insert(0, '../')
+sys.path.insert(0, '/home/duxiaodi/GCOM/GCOM_v2/SOURCE')
+sys.path.insert(0, '/home/duxiaodi/GCOM/GCOM_v2/RESONANCE')
 
 import numpy as np
 import trace
@@ -58,6 +55,7 @@ def PARA_RESONANCE(i):
             obz = out['obz']
             rho = out['rho']
 
+            print(out['ob'])
             output[j,k,0]  = R0[i]
             output[j,k,1]  = Z0[j]
             output[j,k,2]  = pitch0[k]
@@ -73,7 +71,7 @@ def PARA_RESONANCE(i):
     return output
 
 if __name__ == '__main__':
-    output = Parallel(n_jobs=10,verbose=5)(delayed(PARA_RESONANCE)(i) \
+    output = Parallel(n_jobs=1,verbose=5)(delayed(PARA_RESONANCE)(i) \
              for i in range(0,len(R0)) \
              )
 
