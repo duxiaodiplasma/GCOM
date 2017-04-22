@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(0, '/home/duxiaodi/GCOM_v3/GCOM/RESONANCE')
+sys.path.insert(0, '/home/duxiaodi/GCOM_v3/GCOM/SOURCE')
 import matplotlib.pylab as plt
 import numpy as np
 import matplotlib
@@ -24,7 +24,7 @@ def read(fn):
     r.rhomax = np.reshape(output[:,:,:,10],np.size(output)/len(output[0,0,0,:]))
     return r
 
-def fi(fn):
+def df(fn):
     out = np.load(fn)
     output = out['output']
     pphi_f = output[:,5]
@@ -42,16 +42,18 @@ def fi(fn):
     zz = f(xx,yy)
     return xx,yy,zz
 
-def resonance(r,fishbone=0,AE=0,fmode=6,tolerance=0.2,m=1,n=0,rhorange=[0,1]):
+def resonance(r,fishbone=0,AE=0,fmode=0,tolerance=0,m=0,n=0,rhorange=[0,1]):
     if fishbone ==1:
        phgh = ((fmode+tolerance) - n*r.fphi )
        plow = ((fmode-tolerance) - n*r.fphi )
        resonance_order = [0]
+       r.p = fmode - n*r.fphi
 
     if AE ==1:
        phgh = ((fmode+tolerance) - n*r.fphi )/r.ftheta-m
        plow = ((fmode-tolerance) - n*r.fphi )/r.ftheta-m
-       resonance_order = np.arange(-5,5)
+       resonance_order = [-5,-4,-3,-2, -1, 0, 1, 2, 3, 4, 5]
+       r.p = (fmode - n*r.fphi )/r.ftheta-m
 
     a = np.array([],dtype='int')
     for i in resonance_order:
@@ -62,9 +64,18 @@ def resonance(r,fishbone=0,AE=0,fmode=6,tolerance=0.2,m=1,n=0,rhorange=[0,1]):
                   | ((r.rhomax<rhorange[1]) & (r.rhomax>rhorange[0])))
                   )
          a = np.concatenate((a,mask[0]))
-    return a
+    r.mask = a
 
-def plot(r,mask=None,fi=None,loss=None):
+    if AE == 1:
+       r.AE = 1
+       r.fishbone = 0
+
+    if fishbone == 1:
+       r.AE = 0
+       r.fishbone = 1
+    return r
+
+def plot(r,fi=None,loss=None):
 
     pphi = -r.pphi
     mu_E = r.mu_E
@@ -97,10 +108,16 @@ def plot(r,mask=None,fi=None,loss=None):
     m6 = np.where(r.ob==6)
     f6 = ax.plot(pphi[m6],mu_E[m6],alpha=0.3,color='blue')
 
-    sc=ax.scatter(pphi[mask],mu_E[mask],color='black',marker='o',s=40)
+    if r.AE == 1:
+       sc=ax.scatter(pphi[r.mask],mu_E[r.mask],c=r.p[r.mask],marker='o',s=20,
+                    vmin=-5,vmax=5)
+       cb = plt.colorbar(sc,orientation='horizontal')
+
+    if r.fishbone == 1:
+       sc=ax.scatter(pphi[r.mask],mu_E[r.mask],color='black',marker='o',s=20)
 
     if fi != None:
-       xx,yy,zz = fi(fi)
+       xx,yy,zz = df(fi)
        ax.contour(xx,yy,zz)
 
     ax.set_xlim([-1.5,1])
@@ -111,14 +128,31 @@ def plot(r,mask=None,fi=None,loss=None):
     return
 
 
-# Kathereen fishbone
-#fn = '/home/duxiaodi/GCOM_v3/GCOM/RESONANCE/output/Kathreen_165037_60keV.npz'
-#r = read(fn)
-#mask = resonance(r,fishbone=1,AE=0,fmode=6,tolerance=0.5,m=0,n=1,rhorange=[0,1.])
-#plot(r,mask)
-
-# Kathereen AE
-fn = '/home/duxiaodi/GCOM/GCOM_v2/RESONANCE/OUT/FI_60_165037.npz'
+# 20170421 Kathereen fishbone
+fn = '/home/duxiaodi/GCOM_v3/GCOM/RESONANCE/output/Kathreen_165037_60keV.npz'
 r = read(fn)
-mask = resonance(r,AE=0,fmode=150,tolerance=0.5,m=0,n=1,rhorange=[0,1.])
-plot(r,mask)
+mask = resonance(r,fishbone=1,fmode=6,tolerance=0.5,m=0,n=1,rhorange=[0,1.])
+plot(r,fi='/home/duxiaodi/GCOM_v3/GCOM/RESONANCE/output/FI_60_165037.npz')
+
+# 20170421 Kathereen AE
+#fn = '/home/duxiaodi/GCOM_v3/GCOM/RESONANCE/output/Kathreen_165865_60keV.npz'
+#r = read(fn)
+#r = resonance(r,AE=1,fmode=130,tolerance=10,m=12,n=-3,rhorange=[0.5,1])
+#plot(r)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

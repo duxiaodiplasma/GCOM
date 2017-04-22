@@ -42,14 +42,17 @@ inpu.switch_calc_freq = 1
 inpu.gfile='/home/duxiaodi/gfile/g'+np.str(inpu.shot)+'.03705'
 
 # generate scan step
-inpu.E0 = 60
-inpu.R_array = np.arange(1.2,2.25,0.01)
-inpu.Z_array = np.array([0])
-inpu.pitch_array = np.arange(-1,1.01,0.01)
+fn_nubeam = '/home/duxiaodi/thomek/dist_60keV_1M_'+np.str(inpu.shot)+'.dat'
+tmp = np.loadtxt(fn_nubeam)
+inpu.mc = 200000
+inpu.R_array = tmp[0:inpu.mc,0]/1e2
+inpu.Z_array = tmp[0:inpu.mc,1]/1e2
+inpu.pitch_array = tmp[0:inpu.mc,2]
+inpu.E_array = tmp[0:inpu.mc,3]/1e3
 inpu.phi0 = 0
 
 # prepare output
-outpu = creatobj.outpu('Kathreen_'+np.str(inpu.shot)+'_'+np.str(inpu.E0)+'keV')
+outpu = creatobj.outpu('Kathreen_fi_'+np.str(inpu.shot)+'_'+np.str(inpu.E0)+'keV')
 outpu.path = '/home/duxiaodi/GCOM_v3/GCOM/RESONANCE/output/'
 
 # calculate equilibrum
@@ -58,36 +61,34 @@ g = bgrid.main(g)
 g = ugrid.equ(g)
 
 # real calculation begins from here
-output = np.zeros((len(inpu.Z_array),len(inpu.pitch_array),11))
+output = np.zeros((inpu.mc,11))
 def PARA_SCAN(g,inpu,outpu,i):
 
-    for j in range(0,len(inpu.Z_array)):
-        for k in range(0,len(inpu.pitch_array)):
+    inpu.E0 = inpu.E_array[i]
+    inpu.R0 = inpu.R_array[i]
+    inpu.Z0 = inpu.Z_array[i]
+    inpu.pitch0 = inpu.pitch_array[i]
 
-            inpu.R0 = inpu.R_array[i]
-            inpu.Z0 = inpu.Z_array[j]
-            inpu.pitch0 = inpu.pitch_array[k]
+    outpu = trace.main(g,inpu,outpu)
 
-            outpu = trace.main(g,inpu,outpu)
-
-            output[j,k,0]  = inpu.R0
-            output[j,k,1]  = inpu.Z0
-            output[j,k,2]  = inpu.pitch0
-            output[j,k,3]  = inpu.E0
-            output[j,k,4]  = outpu.ob
-            output[j,k,5]  = outpu.pphi
-            output[j,k,6]  = outpu.mu_E
-            output[j,k,7]  = outpu.f_phi
-            output[j,k,8]  = outpu.f_theta
-            output[j,k,9]  = np.min(outpu.rho)
-            output[j,k,10] = np.max(outpu.rho)
+    output[0]  = inpu.R0
+    output[1]  = inpu.Z0
+    output[2]  = inpu.pitch0
+    output[3]  = inpu.E0
+    output[4]  = outpu.ob
+    output[5]  = outpu.pphi
+    output[6]  = outpu.mu_E
+    output[7]  = outpu.f_phi
+    output[8]  = outpu.f_theta
+    output[9]  = np.min(outpu.rho)
+    output[10] = np.max(outpu.rho)
 
     return output
 
 
 if __name__ == '__main__':
     output = Parallel(n_jobs=inpu.cores,verbose=5)(delayed(PARA_SCAN)(g,inpu,outpu,i) \
-             for i in range(0,len(inpu.R_array)))
+             for i in range(0,inpu.mc))
 
     outpu.fn = outpu.path+outpu.comment+'.npz'
     np.savez(outpu.fn,output=output)
