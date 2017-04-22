@@ -29,69 +29,20 @@
 ; REVISION HISTORY:
 """
 
-import gl
-import geqdsk
 import numpy as np
-from scipy import interpolate
-import sys
 
-def main(lr,lz,phi,fn):
+def main(lr,lz,phi,f_br,f_bz,f_bt,f_psi):
 
-   # read gfile
-   res = geqdsk.read(fn)
-
-   nr = res['nw']
-   nz = res['nh']
-   r = res['r']
-   z = res['z']
-   psirz = res['psirz']
-   rc = res['rcentr']
-   bc = res['bcentr']
-   rbbbs = res['rbbbs']
-   zbbbs = res['zbbbs']
-   sibry = res['sibry']
-   simag = res['simag']
-
-   # first deravitive of the psi in RZ direction
-   dpsi_dr = np.zeros([nr,nz])
-   dpsi_dz = np.zeros([nr,nz])
-
-   for i in range(1, nr-1):
-       for j in range(1, nz-1):
-           dpsi_dr[i,j] = (psirz[i+1,j]-psirz[i-1,j])/(r[i+1,j]-r[i-1,j])
-           dpsi_dz[i,j] = (psirz[i,j+1]-psirz[i,j-1])/(z[i,j+1]-z[i,j-1])
-
-   # 2D interpolation for dpsirz
-   rr = np.zeros(nr)
-   zz = np.zeros(nz)
-   for i in range(0, nr):
-       rr[i] = r[i, 0]
-   for i in range(0, nz):
-       zz[i] = z[0, i]
-
-   fr = interpolate.interp2d(zz, rr, dpsi_dr, kind='cubic')
-   fz = interpolate.interp2d(zz, rr, dpsi_dz, kind='cubic')
-
-   # local magnetic field strength
-   l_dpsir = fr(lz,lr)
-   l_dpsiz = fz(lz,lr)
-
-   # local psi
-   #fpsi = interpolate.interp2d(zz, rr, (psirz-simag)/(sibry-simag), kind='cubic')
-   fpsi = interpolate.interp2d(zz, rr, psirz, kind='cubic')
-   psi = fpsi(lz,lr)
-
-   #br = -1.0*-(1/lr)*l_dpsiz
-   #bz = -1.0* (1/lr)*l_dpsir # -1.0 for unify the defination
    # right hand?
-   br = -1.0*-(1/lr)*l_dpsiz
-   bz = -1.0* (1/lr)*l_dpsir # -1.0 for unify the defination
+   br = f_br(lz,lr)
+   bz = f_bz(lz,lr) # -1.0 for unify the defination
 			     # of the plus current direction in DIII-D,$
 			     # which is CCW direction for plus
 
    # -1 for right-handed coordinate
-   bt = np.asarray(rc*bc/lr)
+   bt = f_bt(lz,lr)
    # print(br,bz,bt)
+   psi = f_psi(lz,lr)
 
    # rz coordinate to xyz coordinate
    bx = -1.0*bt*np.cos(phi)-br*np.sin(phi)
@@ -110,13 +61,5 @@ def main(lr,lz,phi,fn):
            'bt' :bt,
            'b'  :b,
            'psi':psi,
-           'fr' :fr,
-           'fz' :fz,
-           'fpsi':fpsi,
-           'rcbc':rc*bc,
-           'rbbbs':rbbbs,
-           'zbbbs':zbbbs,
-           'simag':simag,
-           'sibry':sibry
            }
 

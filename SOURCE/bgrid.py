@@ -29,24 +29,19 @@
 ; REVISION HISTORY:
 """
 
-import gl
-import geqdsk
 import numpy as np
 from scipy import interpolate
 import sys
 
-def main(fn):
+def main(g):
 
-   # read gfile
-   res = geqdsk.read(fn)
-
-   nr = res['nw']
-   nz = res['nh']
-   r = res['r']
-   z = res['z']
-   psirz = res['psirz']
-   rc = res['rcentr']
-   bc = res['bcentr']
+   nr = g.nw
+   nz = g.nh
+   r = g.r
+   z = g.z
+   psirz = g.psirz
+   rc = g.rcentr
+   bc = g.bcentr
 
    # ---------
    rr = np.zeros(nr)
@@ -56,24 +51,24 @@ def main(fn):
    for i in range(0, nz):
        zz[i] = z[0, i]
 
-   f_psirz = interpolate.interp2d(zz, rr, psirz, kind='cubic')
-#   #
-   new_nr = 204
-   new_nz = 204
-   new_rr = np.linspace(np.min(rr),np.max(rr),new_nr)
-   new_zz = np.linspace(np.min(zz),np.max(zz),new_nz)
-   new_psirz = np.zeros((new_nr,new_nz))
-   new_psirz = f_psirz(new_zz,new_rr)
-   new_r = np.tile(new_rr,new_nr).reshape((new_nr,new_nz)).transpose()
-   new_z = np.tile(new_zz,new_nz).reshape((new_nr,new_nz))
-
-   nr = np.copy(new_nr)
-   nz = np.copy(new_nz)
-   rr = np.copy(new_rr)
-   zz = np.copy(new_zz)
-   r  = np.copy(new_r)
-   z  = np.copy(new_z)
-   psirz = np.copy(new_psirz)
+   f_psi = interpolate.interp2d(zz, rr, psirz, kind='cubic')
+#  this seems to be meaningless
+#   new_nr = 504
+#   new_nz = 504
+#   new_rr = np.linspace(np.min(rr),np.max(rr),new_nr)
+#   new_zz = np.linspace(np.min(zz),np.max(zz),new_nz)
+#   new_psirz = np.zeros((new_nr,new_nz))
+#   new_psirz = f_psi(new_zz,new_rr)
+#   new_r = np.tile(new_rr,new_nr).reshape((new_nr,new_nz)).transpose()
+#   new_z = np.tile(new_zz,new_nz).reshape((new_nr,new_nz))
+#
+#   nr = np.copy(new_nr)
+#   nz = np.copy(new_nz)
+#   rr = np.copy(new_rr)
+#   zz = np.copy(new_zz)
+#   r  = np.copy(new_r)
+#   z  = np.copy(new_z)
+#   psirz = np.copy(new_psirz)
 
    # ---------
 
@@ -170,49 +165,51 @@ def main(fn):
    f_db_dz =  interpolate.interp2d(zz, rr, db_dz, kind='cubic')
 
 
-   return {
-           'br' : br,
-           'bz' : bz,
-           'bt' : bt,
-           'b'  : b,
+   g.br = br
+   g.bz = bz
+   g.bt = bt
+   g.b  = b
 
-           'f_br' : f_br,
-           'f_bz' : f_bz,
-           'f_bt' : f_bt,
-           'f_b'  : f_b,
+   g.f_br = f_br
+   g.f_bz = f_bz
+   g.f_bt = f_bt
+   g.f_b  = f_b
 
-           'dbz_dr' : dbz_dr,
-           'dbz_dz' : dbz_dz,
+   g.dbz_dr = dbz_dr
+   g.dbz_dz = dbz_dz
 
-           'dbr_dr' : dbr_dr,
-           'dbr_dz' : dbr_dz,
+   g.dbr_dr = dbr_dr
+   g.dbr_dz = dbr_dz
 
-           'dbt_dr' : dbt_dr,
-           'dbt_dz' : dbt_dz,
+   g.dbt_dr = dbt_dr
+   g.dbt_dz = dbt_dz
 
-           'db_dr'  : db_dr,
-           'db_dz'  : db_dz,
+   g.db_dr = db_dr
+   g.db_dz = db_dz
 
-           'f_dbz_dr':f_dbz_dr,
-           'f_dbz_dz':f_dbz_dz,
+   g.f_dbz_dr = f_dbz_dr
+   g.f_dbz_dz = f_dbz_dz
 
-           'f_dbr_dr':f_dbr_dr,
-           'f_dbr_dz':f_dbr_dz,
+   g.f_dbr_dr = f_dbr_dr
+   g.f_dbr_dz = f_dbr_dz
 
-           'f_dbt_dr':f_dbt_dr,
-           'f_dbt_dz':f_dbt_dz,
+   g.f_dbt_dr = f_dbt_dr
+   g.f_dbt_dz = f_dbt_dz
 
-           'f_db_dr' :f_db_dr,
-           'f_db_dz' :f_db_dz,
+   g.f_db_dr = f_db_dr
+   g.f_db_dz  = f_db_dz
 
-           'rr':rr,
-           'zz':zz,
-           'r' :r,
-           'z' :z,
+   g.rr = rr
+   g.zz = zz
+   g.r  = r
+   g.z  = z
 
-           'psirz':psirz,
+   g.psi = psirz
+   g.f_psi = f_psi
 
-           'nr':nr,
-           'nz':nz
-           }
+   g.nr = nr
+   g.nz = nz
+
+   return g
+
 

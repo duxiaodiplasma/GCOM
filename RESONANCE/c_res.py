@@ -8,6 +8,7 @@ import matplotlib
 import matplotlib.mlab as mlab
 
 
+<<<<<<< HEAD
 #fn = np.load('/home/duxiaodi/GCOM/GCOM_v2/RESONANCE/OUT/PARA_RESONANCE_60_152932.npz')
 Eini =60
 #comment = '165037'
@@ -33,6 +34,16 @@ output = fn['output']
 #ftheta = output[:,8]
 #rhomin = output[:,9]
 #rhomax = output[:,10]
+=======
+Eini = 60
+comment = '165037_benchmark_update4'
+comment = '165037_benchmark_final1'
+fn = np.load('/home/duxiaodi/GCOM_v3/GCOM/RESONANCE/output/Kathreen_165037_60keV.npz')
+
+output = fn['output']
+#fn2 = np.load('/home/duxiaodi/GCOM/GCOM_v2/RESONANCE/OUT/FI_'+np.str(Eini)+'_'+comment+'.npz')
+#output2 = fn2['output']
+>>>>>>> GCOM_obj
 R0 = np.reshape(output[:,:,:,0],np.size(output)/len(output[0,0,0,:]))
 Z0 = np.reshape(output[:,:,:,1],np.size(output)/len(output[0,0,0,:]))
 ob = np.reshape(output[:,:,:,4],np.size(output)/len(output[0,0,0,:]))
@@ -53,7 +64,11 @@ def normalize(data):
 
 def int_p(p,intp,msrho):
     mask = np.where(((ob > 3) & (mu_E>0))
+<<<<<<< HEAD
                   & ((p>(intp-0.2)) & (p<(intp+0.2)))
+=======
+                  & ((p>(intp-0.1)) & (p<(intp+0.1)))
+>>>>>>> GCOM_obj
                   & (((rhomin<msrho[1]) & (rhomin>msrho[0]))
                   | ((rhomax<msrho[1]) & (rhomax>msrho[0])))
                     )
@@ -61,8 +76,7 @@ def int_p(p,intp,msrho):
     return mask[0]
 
 
-
-msmin,msmax = 0.,1.0
+msmin,msmax = 0.,1
 fmode = 6
 nmode = 1
 mmode=1
@@ -78,9 +92,13 @@ plt.clf()
 plt.title('$f_{mode}=$'+np.str(fmode)+'$kHz$'+'   $n=$'+np.str(nmode)+
           '  E='+np.str(Eini)+'keV'+'   '+comment)
 
+<<<<<<< HEAD
 
 
 plt.xlim(-2,1)
+=======
+plt.xlim(-1.5,0.7)
+>>>>>>> GCOM_obj
 plt.ylim(-0.2,1.4)
 
 matplotlib.interactive('t')

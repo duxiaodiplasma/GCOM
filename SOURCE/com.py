@@ -1,4 +1,3 @@
-import gl
 import bfield
 import matplotlib
 matplotlib.use( "Agg" )
@@ -11,53 +10,44 @@ from progressbar import ProgressBar
 from scipy import interpolate
 from scipy.signal import savgol_filter
 
-def f_pphi(R,bphi,b,v_para,psi):
+def f_pphi(R,bphi,b,v_para,psi,charge,mass):
     """ calculate canonical toroial momentum """
-    pphi \
-    = gl.m*R*(bphi/b)*v_para+gl.q*psi
-    # not sure plus or minus
-    #= gl.m*R*(bphi/b)*v_para+gl.q*psi
+    pphi = mass*R*(bphi/b)*v_para+charge*psi
+    # not sure plus or minus (this depends on the definition of the pitch)
+    # if plus, for +Ip case and -Bt case, the plus pitch indicates the co-passing
+    # if minus, for +Ip case and -Bt case, the plus pitch indicates the counter-passing
+    # pphi = -mass*R*(bphi/b)*v_para+charge*psi
     return pphi
 
 
-def f_mu(R,E,pphi,btotal,bphi,psi):
+def f_mu(R,E,pphi,btotal,bphi,psi,charge,mass):
     """ claculate magnetic momentum """
-    mu = E/btotal - (btotal/(2*gl.m))*((pphi-gl.q*psi)/(R*bphi))**2
-    mu = mu/1e3/gl.q
+    mu = E/btotal - (btotal/(2*mass))*((pphi-charge*psi)/(R*bphi))**2
+    mu = mu/1e3/charge
     return mu
 
 
-def f_ini(R0,Z0,E0,pitch0):
+def f_ini(R0,Z0,E0,pitch0,phi0,charge,mass,f_br,f_bz,f_bt,f_psi):
     """ initialize the inputs """
     # SI unit
-    E0 = E0*gl.q*1e3
+    E0 = E0*charge*1e3
 
     # velocity
-    v = np.sqrt(2*E0/gl.m)
+    v = np.sqrt(2*E0/mass)
     v_para = v*pitch0
     v_perp = np.sqrt(v**2-v_para**2)
 
     # magnetic field in the equilibirum
-    b = bfield.main(R0,Z0,0,gl.fn)
+    b = bfield.main(R0,Z0,phi0,f_br,f_bz,f_bt,f_psi)
     bphi = b['bt']
     btotal = b['b']
     psi   = b['psi']
 
-    # fixed equilibrium
-    f_br  = b['fr']
-    f_bz  = b['fz']
-    f_psi = b['fpsi']
-    rcbc  = b['rcbc']
-    rbbbs = b['rbbbs']
-    zbbbs = b['zbbbs']
-    simag = b['simag']
-    sibry = b['sibry']
-
     # initial toroidal canonical momentum
-    pphi0 = f_pphi(R0,bphi,btotal,v_para,psi)
+    pphi0 = f_pphi(R0,bphi,btotal,v_para,psi,charge,mass)
 
     # intial mangetic momentum
-    mu0 = E0/btotal*(1-pitch0**2)/1e3/gl.q
+    mu0 = E0/btotal*(1-pitch0**2)/1e3/charge
 
     return {
        	    'E0'    :E0,
@@ -66,17 +56,11 @@ def f_ini(R0,Z0,E0,pitch0):
             'v_perp':v_perp,
             'pphi0' :pphi0,
             'mu0'    :mu0,
-            'f_br'  :f_br,
-            'f_bz'  :f_bz,
-            'f_psi' :f_psi,
-            'rcbc'  :rcbc,
-            'rbbbs' :rbbbs,
-            'zbbbs' :zbbbs
             }
 
-def f_vpara(R,btotal,bphi,pphi,psi):
+def f_vpara(R,btotal,bphi,pphi,psi,charge,mass):
     """ calculate vparallel velocity from pphi  """
-    vpara = btotal/(gl.m*R*bphi)*(pphi-gl.q*psi)
+    vpara = btotal/(mass*R*bphi)*(pphi-charge*psi)
     return vpara
 
 def f_mucontour(r,z,murz,vpararz,rbbbs,zbbbs,mu0,rmaxis,R0,Z0,nseg,f_psi,sibry,simag):
@@ -113,7 +97,12 @@ def f_mucontour(r,z,murz,vpararz,rbbbs,zbbbs,mu0,rmaxis,R0,Z0,nseg,f_psi,sibry,s
     allobz = np.zeros(1)
     minall = np.zeros(len(p))
 
+<<<<<<< HEAD
     rho = np.zeros(1)+2 # dummy rho
+=======
+    # dummy rho
+    rho = np.zeros(1) +2
+>>>>>>> GCOM_obj
     if len(p) >0:
 
        for subline in np.arange(len(p)):
@@ -145,7 +134,7 @@ def f_mucontour(r,z,murz,vpararz,rbbbs,zbbbs,mu0,rmaxis,R0,Z0,nseg,f_psi,sibry,s
        ob_vpara = np.zeros(len(obr))
        for i in np.arange(len(obr)):
            ob_vpara[i] = fvpara(obz[i],obr[i])
-# debug        print(1/2.*gl.m*ob_vpara[i]**2/gl.q/1e3)
+# debug        print(1/2.*mass*ob_vpara[i]**2/charge/1e3)
 #
     return {
             'obr'         : obr,
@@ -175,6 +164,10 @@ def orbit_check(ob_vpara,rho):
     # obz>np.max(zbbbs), obz<np.min(zbbbs)]
 
     # 20170418
+<<<<<<< HEAD
+=======
+    # dummy
+>>>>>>> GCOM_obj
     if np.max(np.abs(rho)) > 1:
        outboundary = True
     else:
