@@ -1,0 +1,7 @@
+[?1034h[Parallel(n_jobs=12)]: Done  48 tasks      | elapsed:    3.5s
+[Parallel(n_jobs=12)]: Done 138 tasks      | elapsed:    9.4s
+[Parallel(n_jobs=12)]: Done 264 tasks      | elapsed:   17.7s
+[Parallel(n_jobs=12)]: Done 426 tasks      | elapsed:   27.9s
+[Parallel(n_jobs=12)]: Done 624 tasks      | elapsed:   40.5s
+[Parallel(n_jobs=12)]: Done 858 tasks      | elapsed:   55.0s
+[Parallel(n_jobs=12)]: Done 1128 tasks      | elapsed:  1.2min

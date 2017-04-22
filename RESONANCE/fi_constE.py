@@ -53,7 +53,7 @@ inpu.phi0 = 0
 
 # prepare output
 outpu = creatobj.outpu('Kathreen_fi_'+np.str(inpu.shot)+'_'+np.str(inpu.E0)+'keV')
-outpu.path = '/home/duxiaodi/GCOM_v3/GCOM/RESONANCE/output/'
+outpu.path = '/home/duxiaodi/GCOM/RESONANCE/output/'
 
 # calculate equilibrum
 g = geqdsk.read(inpu.gfile)
