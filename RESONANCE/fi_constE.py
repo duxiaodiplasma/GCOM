@@ -1,8 +1,8 @@
 import sys
 import numpy as np
 from joblib import Parallel, delayed
-sys.path.insert(0, '/home/duxiaodi/GCOM_v3/GCOM/SOURCE')
-sys.path.insert(0, '/home/duxiaodi/GCOM_v3/GCOM/RESONANCE')
+sys.path.insert(0, '/home/duxiaodi/GCOM/SOURCE')
+sys.path.insert(0, '/home/duxiaodi/GCOM/RESONANCE')
 import creatobj
 import geqdsk
 import bgrid

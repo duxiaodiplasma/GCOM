@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(0, '/home/duxiaodi/GCOM_v3/GCOM/SOURCE')
+sys.path.insert(0, '/home/duxiaodi/GCOM/SOURCE')
 import matplotlib.pylab as plt
 import numpy as np
 import matplotlib
@@ -129,10 +129,10 @@ def plot(r,fi=None,loss=None):
 
 
 # 20170421 Kathereen fishbone
-fn = '/home/duxiaodi/GCOM_v3/GCOM/RESONANCE/output/Kathreen_165037_60keV.npz'
+fn = '/home/duxiaodi/GCOM/RESONANCE/output/Kathreen_165037_60keV.npz'
 r = read(fn)
 mask = resonance(r,fishbone=1,fmode=6,tolerance=0.5,m=0,n=1,rhorange=[0,1.])
-plot(r,fi='/home/duxiaodi/GCOM_v3/GCOM/RESONANCE/output/FI_60_165037.npz')
+plot(r,fi='/home/duxiaodi/GCOM/RESONANCE/output/FI_60_165037.npz')
 
 # 20170421 Kathereen AE
 #fn = '/home/duxiaodi/GCOM_v3/GCOM/RESONANCE/output/Kathreen_165865_60keV.npz'

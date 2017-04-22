@@ -1,8 +1,8 @@
 import sys
 import numpy as np
 from joblib import Parallel, delayed
-sys.path.insert(0, '/home/duxiaodi/GCOM_v3/GCOM/SOURCE')
-sys.path.insert(0, '/home/duxiaodi/GCOM_v3/GCOM/RESONANCE')
+sys.path.insert(0, '/home/duxiaodi/GCOM/SOURCE')
+sys.path.insert(0, '/home/duxiaodi/GCOM/RESONANCE')
 import creatobj
 import geqdsk
 import bgrid
@@ -31,7 +31,7 @@ CALCULATION HISTORY
 # dummy, usually do not need to change
 inpu = creatobj.inpu(0, 0, 0, 0, 0)
 inpu.shot = 165037
-inpu.cores = 12
+inpu.cores = 1
 inpu.nseg = 1000
 inpu.nstep = 200000
 inpu.tstep = 3e-10
