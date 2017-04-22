@@ -132,10 +132,11 @@ def plot(r,fi=None,loss=None):
 fn = '/home/duxiaodi/GCOM/RESONANCE/output/Kathreen_165037_60keV.npz'
 r = read(fn)
 mask = resonance(r,fishbone=1,fmode=6,tolerance=0.5,m=0,n=1,rhorange=[0,1.])
+plot(r)
 plot(r,fi='/home/duxiaodi/GCOM/RESONANCE/output/FI_60_165037.npz')
 
 # 20170421 Kathereen AE
-#fn = '/home/duxiaodi/GCOM_v3/GCOM/RESONANCE/output/Kathreen_165865_60keV.npz'
+#fn = '/home/duxiaodi/GCOM/RESONANCE/output/Kathreen_165865_60keV.npz'
 #r = read(fn)
 #r = resonance(r,AE=1,fmode=130,tolerance=10,m=12,n=-3,rhorange=[0.5,1])
 #plot(r)

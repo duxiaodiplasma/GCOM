@@ -30,7 +30,7 @@ CALCULATION HISTORY
 
 # dummy, usually do not need to change
 inpu = creatobj.inpu(0, 0, 0, 0, 0)
-inpu.shot = 165037
+inpu.shot = 165865
 inpu.cores = 12
 inpu.nseg = 1000
 inpu.nstep = 200000
@@ -44,7 +44,7 @@ inpu.gfile='/home/duxiaodi/gfile/g'+np.str(inpu.shot)+'.03705'
 # generate scan step
 fn_nubeam = '/home/duxiaodi/thomek/dist_60keV_1M_'+np.str(inpu.shot)+'.dat'
 tmp = np.loadtxt(fn_nubeam)
-inpu.mc = 200000
+inpu.mc = 100000
 inpu.R_array = tmp[0:inpu.mc,0]/1e2
 inpu.Z_array = tmp[0:inpu.mc,1]/1e2
 inpu.pitch_array = tmp[0:inpu.mc,2]
@@ -61,7 +61,7 @@ g = bgrid.main(g)
 g = ugrid.equ(g)
 
 # real calculation begins from here
-output = np.zeros((inpu.mc,11))
+output = np.zeros(11)
 def PARA_SCAN(g,inpu,outpu,i):
 
     inpu.E0 = inpu.E_array[i]

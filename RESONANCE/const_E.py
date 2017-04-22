@@ -31,7 +31,7 @@ CALCULATION HISTORY
 # dummy, usually do not need to change
 inpu = creatobj.inpu(0, 0, 0, 0, 0)
 inpu.shot = 165037
-inpu.cores = 1
+inpu.cores = 12
 inpu.nseg = 1000
 inpu.nstep = 200000
 inpu.tstep = 3e-10
