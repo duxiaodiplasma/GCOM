@@ -27,7 +27,7 @@ def read(fn):
 def df(fn):
     out = np.load(fn)
     output = out['output']
-    pphi_f = output[:,5]
+    pphi_f = -output[:,5]
     mu_E_f = output[:,6]
 
     binfi =  binned_statistic_2d(pphi_f,mu_E_f,None,'count',bins = [30,30])
@@ -84,10 +84,10 @@ def plot(r,fi=None,loss=None):
     matplotlib.interactive('t')
     ax = plt.subplot(111)
     import matplotlib as mpl
-    label_size = 15
+    label_size = 16
     mpl.rcParams['xtick.labelsize'] = label_size
     mpl.rcParams['ytick.labelsize'] = label_size
-    mpl.rcParams['axes.labelsize'] = 17
+    mpl.rcParams['axes.labelsize'] =16
 
     if loss != None:
        m1 = np.where(r.ob==1)
@@ -109,16 +109,18 @@ def plot(r,fi=None,loss=None):
     f6 = ax.plot(pphi[m6],mu_E[m6],alpha=0.3,color='blue')
 
     if r.AE == 1:
-       sc=ax.scatter(pphi[r.mask],mu_E[r.mask],c=r.p[r.mask],marker='o',s=20,
-                    vmin=-5,vmax=5)
-       cb = plt.colorbar(sc,orientation='horizontal')
+       #sc=ax.scatter(pphi[r.mask],mu_E[r.mask],c=r.p[r.mask],marker='o',s=20,
+       #             vmin=-5,vmax=5)
+       sc=ax.scatter(pphi[r.mask],mu_E[r.mask],marker='o',s=20,color='black')
+       #cb = plt.colorbar(sc,orientation='horizontal')
 
     if r.fishbone == 1:
-       sc=ax.scatter(pphi[r.mask],mu_E[r.mask],color='black',marker='o',s=20)
+       sc=ax.scatter(pphi[r.mask],mu_E[r.mask],color='maroon',marker='o',s=60)
 
     if fi != None:
        xx,yy,zz = df(fi)
-       ax.contour(xx,yy,zz)
+       ax.contour(xx,yy,zz,levels=[150,250,350,450,550,650],colors='black')
+       print(np.min(zz),np.max(zz))
 
     ax.set_xlim([-1.5,1])
     ax.set_ylim([0.,1.4])
@@ -131,15 +133,16 @@ def plot(r,fi=None,loss=None):
 # 20170421 Kathereen fishbone
 fn = '/home/duxiaodi/GCOM/RESONANCE/output/Kathreen_165037_60keV.npz'
 r = read(fn)
-mask = resonance(r,fishbone=1,fmode=6,tolerance=0.5,m=0,n=1,rhorange=[0,1.])
+mask = resonance(r,fishbone=1,fmode=6,tolerance=0.5,m=0,n=1,rhorange=[0,0.5])
 plot(r)
-plot(r,fi='/home/duxiaodi/GCOM/RESONANCE/output/FI_60_165037.npz')
+#plot(r,fi='/home/duxiaodi/GCOM/RESONANCE/output/Kathreen_fi_165037_0keV.npz')
 
 # 20170421 Kathereen AE
 #fn = '/home/duxiaodi/GCOM/RESONANCE/output/Kathreen_165865_60keV.npz'
 #r = read(fn)
 #r = resonance(r,AE=1,fmode=130,tolerance=10,m=12,n=-3,rhorange=[0.5,1])
 #plot(r)
+#plot(r,fi='/home/duxiaodi/GCOM/RESONANCE/output/Kathreen_fi_165865_0keV.npz')
 
 
 
